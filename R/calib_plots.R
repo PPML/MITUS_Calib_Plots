@@ -1,9 +1,12 @@
 #add in some dependencies
 calib_plots<-function(loc){
-  #list of possible plots
-  #for each of these, these data have to exist in MITUS for this state
-  #list realistic plots(data exist)
-  #for each of these makeadaplota
-  #format these as a data frame
-  #return this dataframe
+#create a dataframe to hold plots and accompanying data
+  calib_plots<-all_possible_plots_df()
+#check that the data exists for all the plots
+  plots<-data_check(loc, calib_plots) #returns list of all available plots short name
+#make the plots
+  for (i in 1:nrow(plots)){
+    plots[[i,4]]<-make_plots(loc,as.character(plots[i,2]))
+  }
+  return(plots)
 }
