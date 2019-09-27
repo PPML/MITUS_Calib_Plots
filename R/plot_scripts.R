@@ -23,36 +23,45 @@ calib_plt_nus_ltbi_by_age <- function(loc) {
   #subset into 2006-2016
   target_df0 <-readRDS(system.file(paste0(loc2,"/calibration_targets/",fn),package="MITUS"))  #read in the model output data
   #sum across years
-  target_df<-(target_df0[,2]/sum(target_df0[,2]))*100
+  target_df<-as.data.frame(target_df0[,2]/rowSums(target_df0[,2:3])*100)
   #update the column names for legend use
 
   label<-c("5-14 years","15-24 years ",
            "25-34 years","35-44 years","45-54 years",
            "55-64 years","65-74 years","75+ years")
-  names(target_df)<-label
+  rownames(target_df)<-label
   target_df<-as.data.frame(target_df); colnames(target_df)<-"percentage"
   #read in the model output data
   #find file name
-  fn<-list.files(pattern="NUSB_LTBI_pct",system.file(paste0(loc1,"/calibration_outputs/"),package = "MITUS"))
+  fn<-list.files(pattern = "NUSB_LTBI_pct", system.file(paste0(loc1, "/calibration_outputs/"), package="MITUS"))
   outcomes_df0 <-readRDS(system.file(paste0(loc1,"/calibration_outputs/",fn), package="MITUS"))
   outcomes_df<-as.data.frame(outcomes_df0)
   rownames(outcomes_df)<-label;colnames(outcomes_df)<-"percentage"
+  #calculate the error
+  error_ltbi<-readRDS(system.file("US/error_ltbi.rds", package="MITUS"))[[1]]
+  error_df <- cbind.data.frame(label = label, error_ltbi, target_df)
+  colnames(error_df)[2:4] <- c('lower', 'upper', 'target')
+
   #set up the plot options
   ggplot() + theme_bw() + ylab("") +xlab("Age Group")+ theme(legend.position="bottom") +
     scale_x_discrete(limits=label)+
     #add the model output
-    geom_col(data=outcomes_df, aes(x=label, y=percentage, fill="dodgerblue1"), alpha=.5) +
+    geom_col(data=outcomes_df, aes(x=label, y=percentage, fill="dodgerblue2"),alpha=0.5) +
     #add the target data
-    geom_point(data=target_df, aes(x=label, y=percentage,color="black"  )) +
+    # geom_point(data=target_df, aes(x=label, y=percentage*100, color="black" ) ) +
     #add legend
     scale_color_manual("", values="black", label="LTBI % target")+
     scale_fill_manual("", values="dodgerblue2", label="LTBI % model output")+
+    #add in the error bars
+    # geom_segment(aes(x=label, y=x[,1], xend=label, yend=x[,2]))+
+    geom_pointrange(data = error_df, mapping = aes(x = label, y = target, ymax = upper, ymin = lower, color = 'black')) +
+    # geom_pointrange(data=outcomes_df,aes(x=label, y=percentage, ymin=x[,1], ymax=x[,2]))+
     #add plot title
-    ggtitle(paste0("IGRA+ LTBI in non-US Born Population 2011 in ",loc," by Age (%)"))+
+    ggtitle(paste0("IGRA+ LTBI in Non-US Born Population 2011 in ",loc," by Age (%) [NATIONAL]"))+
     #add data source
-    labs(caption="target data estimated using National Health and Nutrition Examination Survey (NHANES) data")
+    labs(caption="target data estimated using National Health and Nutrition Examination Survey (NHANES) data",
+         shape = 'target')
 }
-
 
 # ----------------------------------------------------------------------------
 
@@ -62,7 +71,6 @@ calib_plt_nus_ltbi_by_age <- function(loc) {
 calib_plt_pct_cases_nusb <- function(loc) {
   #set the location
   loc<-loc
-
   #read in the target data
   #find file name
   #FB stratification
@@ -688,33 +696,45 @@ calib_plt_us_ltbi_by_age <- function(loc) {
   #subset into 2006-2016
   target_df0 <-readRDS(system.file(paste0(loc2,"/calibration_targets/",fn),package="MITUS"))  #read in the model output data
   #sum across years
-  target_df<-(target_df0[,2]/sum(target_df0[,2]))*100
+  target_df<-as.data.frame(target_df0[,2]/rowSums(target_df0[,2:3])*100)
   #update the column names for legend use
 
   label<-c("5-14 years","15-24 years ",
            "25-34 years","35-44 years","45-54 years",
            "55-64 years","65-74 years","75+ years")
-  names(target_df)<-label
+  rownames(target_df)<-label
   target_df<-as.data.frame(target_df); colnames(target_df)<-"percentage"
   #read in the model output data
   #find file name
-  fn<-list.files(pattern="_USB_LTBI_pct",system.file(paste0(loc1,"/calibration_outputs/"),package = "MITUS"))
+  fn<-list.files(pattern = "_USB_LTBI_pct", system.file(paste0(loc1, "/calibration_outputs/"), package="MITUS"))
   outcomes_df0 <-readRDS(system.file(paste0(loc1,"/calibration_outputs/",fn), package="MITUS"))
   outcomes_df<-as.data.frame(outcomes_df0)
   rownames(outcomes_df)<-label;colnames(outcomes_df)<-"percentage"
+  #calculate the error
+  error_ltbi<-readRDS(system.file("US/error_ltbi.rds", package="MITUS"))[[2]]
+  # errors<-cbind(target_df-error_ltbi[,1],target_df+error_ltbi[,2],((target_df-error_ltbi[,1]+target_df+error_ltbi[,2])/2) )
+  error_df <- cbind.data.frame(label = label, error_ltbi, target_df)
+  colnames(error_df)[2:4] <- c('lower', 'upper', 'target')
+
   #set up the plot options
   ggplot() + theme_bw() + ylab("") +xlab("Age Group")+ theme(legend.position="bottom") +
     scale_x_discrete(limits=label)+
     #add the model output
     geom_col(data=outcomes_df, aes(x=label, y=percentage, fill="dodgerblue2"),alpha=0.5) +
     #add the target data
-    geom_point(data=target_df, aes(x=label, y=percentage, color="black" ) ) +
+    # geom_point(data=target_df, aes(x=label, y=percentage*100, color="black" ) ) +
     #add legend
     scale_color_manual("", values="black", label="LTBI % target")+
     scale_fill_manual("", values="dodgerblue2", label="LTBI % model output")+
+    #add in the error bars
+    # geom_segment(aes(x=label, y=x[,1], xend=label, yend=x[,2]))+
+    geom_pointrange(data = error_df, mapping = aes(x = label, y = target, ymax = upper, ymin = lower, color = 'black')) +
+    # geom_pointrange(data=outcomes_df,aes(x=label, y=percentage, ymin=x[,1], ymax=x[,2]))+
     #add plot title
-    ggtitle(paste0("IGRA+ LTBI in US Born Population 2011 in ",loc," by Age (%)"))+
+    ggtitle(paste0("IGRA+ LTBI in US Born Population 2011 in ",loc," by Age (%) [NATIONAL]"))+
     #add data source
-    labs(caption="target data estimated using National Health and Nutrition Examination Survey (NHANES) data")
+    labs(caption="target data estimated using National Health and Nutrition Examination Survey (NHANES) data",
+         shape = 'target')
 
 }
+
