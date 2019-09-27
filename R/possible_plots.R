@@ -15,7 +15,7 @@ all_possible_plots_df<-function(){
                      "TB_Deaths_Age_Time",
                      "Treatment_Outcomes")
   plot_cats<-c(rep("Demography",3),rep("Epidemiology",11))
-  long_names_vec<-c("Population:Total, US, and Non-US Born",
+  long_names_vec<-c("Population: Total, US, and Non-US Born",
                    "Population by Age for Non-US Born and US Born",
                    "Mortality: Total, US, and Non-US Born",
                    "Total TB Cases Identified",

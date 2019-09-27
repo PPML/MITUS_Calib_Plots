@@ -197,14 +197,14 @@ calib_plt_pop_by_age_nat <- function(loc) {
            "25-44 years","45-54 years",
            "55-64 years","65-74 years","75-84 years","85+ years")
   target_df<-cbind(label,target_df)
-  target_df<-as.data.frame(target_df); colnames(target_df)<-c("Age","US-Born target","nonUS-Born target")
+  target_df<-as.data.frame(target_df); colnames(target_df)<-c("Age","US-Born target","non-US Born target")
   #read in the model output data
   #find file name
   fn<-list.files(pattern="pop_ag_nat",system.file(paste0(loc,"/calibration_outputs/"),package = "MITUS"))
   outcomes_df0 <-readRDS(system.file(paste0(loc,"/calibration_outputs/",fn), package="MITUS"))
   outcomes_df<-as.data.frame(outcomes_df0)
   outcomes_df<-cbind(label,outcomes_df)
-  colnames(outcomes_df)<-c("Age","US-Born model output","nonUS-Born model output")
+  colnames(outcomes_df)<-c("Age","US-Born model output","non-US Born model output")
   #reshape the target data
   rtarget<-reshape2::melt(target_df,id="Age")
   #reshape the outcomes data
