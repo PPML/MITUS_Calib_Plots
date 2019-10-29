@@ -1,4 +1,4 @@
-all_possible_plots_df<-function(){
+all_possible_plots_df<-function(loc){
 
   short_names_vec<-c("Total_Population",
                      "Pop_Nat_Time",
@@ -34,6 +34,6 @@ all_possible_plots_df<-function(){
   shortname<-as.vector(short_names_vec)
   name<-as.vector(long_names_vec)
   plot<-lapply(1:14, function(x) list())
-  possible_plots<-tibble(category,shortname,name,plot)
+  possible_plots<-tibble(category,shortname,name,plot,target_data_list(loc), output_data_list(loc))
 return(possible_plots)
 }

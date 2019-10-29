@@ -1,6 +1,6 @@
 data_check<-function(loc, possible_plots){
-  loc1<-loc
-  if (loc1 != "US") {loc2<-"ST"} else {loc2<-loc1}
+loc1<-loc
+if (loc1 != "US") {loc2<-"ST"} else {loc2<-loc1}
   # plot_names<-as.vector(possible_plots[,2])
   available_plots<-rep(NA,14)
   names(available_plots)<-pull(possible_plots,shortname)
