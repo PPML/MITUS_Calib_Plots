@@ -7,6 +7,8 @@
 # and will be prefixed with 'calib_plt_'
 # ----------------------------------------------------------------------------
 
+#' Plot Total Population by Nativity over Time
+
 calib_plt_pop_by_nat_over_time <- function(loc) {
 
   #read in the target data

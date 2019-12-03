@@ -1,3 +1,4 @@
+#' @inheritParams calib_plots
 output_data_list<-function(loc){
   ## "Population: Total, US, and Non-US Born",
   pop_output<-list.files(pattern="pop_yr_nat",system.file(paste0(loc,"/calibration_outputs/"),package = "MITUS"))

@@ -1,3 +1,4 @@
+#' @inheritParams calib_plots 
 target_data_list<-function(loc){
   loc1<-loc
   if (loc1 != "US") {loc2<-"ST"} else {loc2<-loc1}
