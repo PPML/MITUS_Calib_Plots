@@ -1,5 +1,6 @@
 library(testthat)
 library(here)
+library(dplyr)
 
 # check calib_plots function
 context("checking calib_plots(location) for non-empty results")
@@ -11,23 +12,24 @@ context("checking calib_plots(location) for non-empty results")
 locations <- readRDS(here('tests/testthat/top11_and_us_list.rds'))
 
 for (location in locations) {
-  test_that(paste0('calib_plots returns a properly formatted tibble for ', location), {
-    plots <- calib_plots(location)
+  df <- calib_plots(location)
+
+  test_that(paste0('test that calib_plots returns a properly formatted tibble for ', location), {
 
     # check that this is a tibble
-    expect_true(all(c('tbl_df', 'tbl', 'data.frame') %in% class(plots)))
+    expect_true(all(c('tbl_df', 'tbl', 'data.frame') %in% class(df)))
 
     # check that the tibble has at least 1 row 
-    expect_true(nrow(plots) > 0)
+    expect_true(nrow(df) > 0)
 
     ### specification for the column structure
 
     # 6 columns
-    expect_true(ncol(plots) == 6)
+    expect_true(ncol(df) == 6)
 
     # columns are: category, shortname, name, plot, target data, model data
     # TODO: add the final names for target data and model data
-    expect_equal(colnames(plots)[1:4], c('category', 'shortname', 'name', 'plot'))
+    expect_equal(colnames(df)[1:4], c('category', 'shortname', 'name', 'plot'))
 
     # column types are: factor, character, character, list, list, list
     # reasoning: 
@@ -38,6 +40,17 @@ for (location in locations) {
     #   - target data and model data are lists so we can insert tibbles into
     #       them (tibble being built on top of data.frame, being build on top of
     #       lists.)
-    expect_identical(unname(sapply(plots, class)), c('factor', 'character', 'character', 'list', 'list', 'list'))
+    expect_identical(unname(sapply(df, class)), c('factor', 'character', 'character', 'list', 'list', 'list'))
+
+
   })
+
+  plots <- unique(df$shortname)
+  for (plt in plots) {
+    test_that(paste0("test that ", plt, " in ", location, " is a ggplot"), {
+      expect_true(
+        'ggplot' %in% (df %>% filter(shortname == plt) %>% `[[`(1, 'plot') %>% class)
+      )
+    })
+  }
 }
