@@ -14,7 +14,7 @@ target_data_list<-function(loc){
   mortality_target<-list.files(pattern="tot_mort",system.file(paste0(loc,"/calibration_targets/"),package = "MITUS"))
   mortality_target<-readRDS(system.file(paste0(loc1, "/calibration_targets/", mortality_target), package="MITUS"))
 ##  "Total TB Cases Identified",
-  TB_cases_target<-list.files(pattern="fb_cases",system.file(paste0(loc,"/calibration_targets/"),package = "MITUS"))
+  TB_cases_target<-list.files(pattern=paste0(loc, "_fb_cases"),system.file(paste0(loc,"/calibration_targets/"),package = "MITUS"))
   TB_cases_target<-readRDS(system.file(paste0(loc, "/calibration_targets/", TB_cases_target), package="MITUS"))
   TB_cases_target<-cbind(TB_cases_target[,1], ((1-TB_cases_target[,2])*TB_cases_target[,3]),(TB_cases_target[,2]*TB_cases_target[,3]))
   colnames(TB_cases_target)<-c("Year", "USB Cases", "NUSB Cases")
@@ -31,7 +31,7 @@ target_data_list<-function(loc){
   TB_cases_age_time_target<-readRDS(system.file(paste0(loc1, "/calibration_targets/", TB_cases_age_time_target), package="MITUS"))
 
   ##  "Percent of TB Cases in Non-US Born Population",
-  NUS_cases_target<-list.files(pattern="fb_cases",system.file(paste0(loc,"/calibration_targets/"),package = "MITUS"))
+  NUS_cases_target<-list.files(pattern=paste0(loc, "_fb_cases"),system.file(paste0(loc,"/calibration_targets/"),package = "MITUS"))
   NUS_cases_target<-readRDS(system.file(paste0(loc1, "/calibration_targets/", NUS_cases_target), package="MITUS"))
 
   ##  "Percent of Non-US Born TB Cases Arrived in Past 2 Years",
