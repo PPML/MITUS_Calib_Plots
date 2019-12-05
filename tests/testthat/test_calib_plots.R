@@ -9,7 +9,15 @@ context("checking calib_plots(location) for non-empty results")
 # states by incidence, which are the states which are currently calibrated and
 # intended for public access from MITUS (production2 branch) in Tabby2.
 
-locations <- readRDS(here('tests/testthat/top11_and_us_list.rds'))
+# code to update locations: 
+# 
+# devtools::load_all()
+# locations <- 
+#   c("US", "CA", "FL", "GA", "IL", "MA", "NJ", "NY", "PA", "TX",
+#   "VA", "WA")
+# readr::write_lines(x=locations, path='test_locations.txt')
+# 
+locations <- readr::read_lines('test_locations.txt')
 
 # test that in every location from the locations vector that the results of
 # calib_plots render properly. 
