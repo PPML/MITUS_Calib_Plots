@@ -150,7 +150,7 @@ calib_plt_tb_cases_nat_over_time <- function(loc) {
   target_df_tot <-readRDS(system.file(paste0(loc,"/calibration_targets/",fn),package="MITUS"))
   target_df_tot[,2] <-target_df_tot[,2]*1e3
   #nativity stratification
-  fn<-list.files(pattern="fb_cases",system.file(paste0(loc,"/calibration_targets/"),package = "MITUS"))
+  fn<-list.files(pattern=paste0(loc, "_fb_cases"),system.file(paste0(loc,"/calibration_targets/"),package = "MITUS"))
   target_df0 <-readRDS(system.file(paste0(loc,"/calibration_targets/",fn),package="MITUS"))  #read in the model output data
   #format the data into a single dataframe
   target_df1<-cbind(target_df0[,2],1-target_df0[,2])*target_df0[,3]
@@ -210,7 +210,7 @@ calib_plt_tb_cases_identified_over_ten_years <- function(loc) {
   #get years
   years<-target_df_tot[,1]
   #nativity stratification
-  fn<-list.files(pattern="fb_cases",system.file(paste0(loc,"/calibration_targets/"),package = "MITUS"))
+  fn<-list.files(pattern=paste0(loc, "_fb_cases"),system.file(paste0(loc,"/calibration_targets/"),package = "MITUS"))
   target_df0 <-readRDS(system.file(paste0(loc,"/calibration_targets/",fn),package="MITUS"))  #read in the model output data
   #format the data into a single dataframe
   target_df1<-cbind(target_df0[,2],1-target_df0[,2])*target_df0[,3]
@@ -363,7 +363,7 @@ calib_plt_pct_cases_nusb <- function(loc) {
   #read in the target data
   #find file name
   #FB stratification
-  fn<-list.files(pattern="fb_cases",system.file(paste0(loc,"/calibration_targets/"),package = "MITUS"))
+  fn<-list.files(pattern=paste0(loc, "_fb_cases"),system.file(paste0(loc,"/calibration_targets/"),package = "MITUS"))
   target_df0 <-readRDS(system.file(paste0(loc,"/calibration_targets/",fn),package="MITUS"))  #read in the model output data
   target_df0<-target_df0[,-3] #keep year and percentage
   target_df0<-target_df0[(nrow(target_df0)-10):nrow(target_df0),] #last 10 years
