@@ -15,9 +15,9 @@ context("checking calib_plots(location) for non-empty results")
 # locations <- 
 #   c("US", "CA", "FL", "GA", "IL", "MA", "NJ", "NY", "PA", "TX",
 #   "VA", "WA")
-# readr::write_lines(x=locations, path='test_locations.txt')
+# readr::write_lines(x=locations, path=here('inst/required_locations.txt'))
 # 
-locations <- readr::read_lines('test_locations.txt')
+locations <- readr::read_lines(system.file('required_locations.txt', package='MITUSCalibPlots'))
 
 # test that in every location from the locations vector that the results of
 # calib_plots render properly. 
@@ -26,6 +26,19 @@ locations <- readr::read_lines('test_locations.txt')
 # columns as specified in this test, that the plots column is filled with
 # ggplot objects, and that the plots required for tabby2 are available.
 #
+
+# required_outcomes_for_tabby2 will be read in from inst/ 
+# using readr (as is similarly done with locations)
+#
+# code to update:
+# required_outcomes_for_tabby2 <- 
+#   c('Total_Population', 'TB_Cases_Recent_Time', 'TB_Cases_Age', 'ltbi_prev_US',
+#     'ltbi_prev_NUS', 'TB_Deaths_Year')
+# 
+# readr::write_lines(required_outcomes_for_tabby2, here("inst/required_plots.txt"))
+
+required_outcomes_for_tabby2 <- 
+  readr::read_lines(system.file("required_plots.txt", package="MITUSCalibPlots"))
 
 for (location in locations) {
   df <- calib_plots(location)
@@ -74,10 +87,6 @@ for (location in locations) {
   # test that the comparison to recent data plots intended to be available in tabby2 
   # are available in calib_plots when plots_subset is not used.
   test_that(paste0("test that the plots required for tabby2 are available in calib_plots(", location, ")"), {
-    # expect that calib_plots(location) includes the plots with the following shortnames:
-    required_outcomes_for_tabby2 <- 
-      c('Total_Population', 'TB_Cases_Time', 'TB_Cases_Age', 'ltbi_prev_US',
-        'ltbi_prev_NUS', 'TB_Deaths_Year')
 
     # test that tabby2 outcomes are available for every location 
     expect_true(all(required_outcomes_for_tabby2 %in% unique_plots))
