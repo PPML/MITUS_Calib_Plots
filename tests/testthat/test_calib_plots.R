@@ -15,9 +15,9 @@ context("checking calib_plots(location) for non-empty results")
 # locations <- 
 #   c("US", "CA", "FL", "GA", "IL", "MA", "NJ", "NY", "PA", "TX",
 #   "VA", "WA")
-# readr::write_lines(x=locations, path='test_locations.txt')
+# readr::write_lines(x=locations, path='inst/test_locations.txt')
 # 
-locations <- readr::read_lines('test_locations.txt')
+locations <- readr::read_lines(system.file('test_locations.txt', package='MITUSCalibPlots'))
 
 # test that in every location from the locations vector that the results of
 # calib_plots render properly. 
