@@ -1,6 +1,6 @@
 #' Check that Data Exist in MITUS for Each Possible Plot
-#' 
-#' @inheritParams calib_plots 
+#'
+#' @inheritParams calib_plots
 #' @param possible_plots A vector of possible plot shortnames
 #' @importFrom dplyr pull
 #' @return A logical vector indicating if data exist for each of possible_plots
@@ -28,7 +28,7 @@ data_check<-function(loc, possible_plots){
   }
   #Percent of TB Cases in Non-US-Born Individuals
   if(
-     length(list.files(pattern="fb_cases",system.file(paste0(loc,"/calibration_targets/"),package = "MITUS")))==1 &
+     length(list.files(pattern=paste0(loc, "_fb_cases"),system.file(paste0(loc,"/calibration_targets/"),package = "MITUS")))==1 &
        length(list.files(pattern="TBcases",system.file(paste0(loc,"/calibration_outputs/"),package = "MITUS")))==1 ){
     available_plots["TB_NUS_percent"]<-TRUE
   } else{
@@ -81,7 +81,7 @@ data_check<-function(loc, possible_plots){
   #TB Cases Last 10 Years and TB Cases Nativity Over Time
   if(
      length(list.files(pattern="cases_yr",system.file(paste0(loc,"/calibration_targets/"),package = "MITUS")))==1 &
-       length(list.files(pattern="fb_cases",system.file(paste0(loc,"/calibration_targets/"),package = "MITUS")))==1 &
+       length(list.files(pattern=paste0(loc, "_fb_cases"),system.file(paste0(loc,"/calibration_targets/"),package = "MITUS")))==1 &
        length(list.files(pattern="TBcases",system.file(paste0(loc,"/calibration_outputs/"),package = "MITUS")))==1){
     available_plots["TB_Cases_Time"]<-TRUE; available_plots["TB_Cases_Recent_Time"]<-TRUE
     } else{    available_plots["TB_Cases_Time"]<-FALSE; available_plots["TB_Cases_Recent_Time"]<-FALSE

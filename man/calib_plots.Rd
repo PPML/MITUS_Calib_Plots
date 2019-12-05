@@ -4,10 +4,16 @@
 \alias{calib_plots}
 \title{Produce a tibble with calibration plots from MITUS}
 \usage{
-calib_plots(loc)
+calib_plots(loc, plots_subset = NULL)
 }
 \arguments{
 \item{loc}{A two-letter code for the location}
+
+\item{plots_subset}{(optional) a subset of shortnames to use to select which
+plots are computed and not included in the return value plots.}
+}
+\value{
+A tibble with 6 columns: category, shortname, name, plot, target_data, output_data
 }
 \description{
 Given a location (`loc`), `calib_plots(loc)` produces a tibble containing

@@ -7,5 +7,14 @@
 \title{Generate Calibration Plots from MITUS for Tabby2}
 \description{
 More about what it does (maybe more than one line)
-    Use four spaces when indenting paragraphs within the Description.
+Use four spaces when indenting paragraphs within the Description.
+}
+\author{
+\strong{Maintainer}: Nicole Swartwood \email{nswartwood@hsph.harvard.edu}
+
+Authors:
+\itemize{
+  \item Christian Testa \email{ctesta@hsph.harvard.edu}
+}
+
 }
