@@ -15,8 +15,9 @@ locations <- readRDS(here('tests/testthat/top11_and_us_list.rds'))
 # calib_plots render properly. 
 # 
 # this includes testing for: the output is a tibble, has non-empty rows, 6
-# columns as specified in this test, and that the plots column is filled with
-# ggplot objects.
+# columns as specified in this test, that the plots column is filled with
+# ggplot objects, and that the plots required for tabby2 are available.
+#
 
 for (location in locations) {
   df <- calib_plots(location)
@@ -50,8 +51,10 @@ for (location in locations) {
     expect_identical(unname(sapply(df, class)), c('factor', 'character', 'character', 'list', 'list', 'list'))
   })
 
-  # Test that the df$plots which are returned from calib_plots have the ggplot class
+  # compute the unique shortnames for checking required outcomes 
   unique_plots <- unique(df$shortname)
+
+  # Test that the df$plots which are returned from calib_plots have the ggplot class
   for (plt in unique_plots) {
     test_that(paste0("test that ", plt, " in ", location, " is a ggplot"), {
       expect_true(
@@ -59,6 +62,18 @@ for (location in locations) {
       )
     })
   }
+
+  # test that the comparison to recent data plots intended to be available in tabby2 
+  # are available in calib_plots when plots_subset is not used.
+  test_that(paste0("test that the plots required for tabby2 are available in calib_plots(", location, ")"), {
+    # expect that calib_plots(location) includes the plots with the following shortnames:
+    required_outcomes_for_tabby2 <- 
+      c('Total_Population', 'TB_Cases_Time', 'TB_Cases_Age', 'ltbi_prev_US',
+        'ltbi_prev_NUS', 'TB_Deaths_Year')
+
+    # test that tabby2 outcomes are available for every location 
+    expect_true(all(required_outcomes_for_tabby2 %in% unique_plots))
+  })
 }
 
 
@@ -70,6 +85,8 @@ context("testing calib_plots with its optional plots_subset argument")
 # location when used with a random subset of the possible plots$shortname
 # options. 
 
+df <- calib_plots('US') # pick an example here to get unique plots from
+unique_plots <- unique(df$shortname) # compute unique shortnames 
 n_unique_plots <- length(unique_plots)
 
 for (location in locations) {
