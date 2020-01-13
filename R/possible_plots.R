@@ -1,16 +1,16 @@
 
 #' Produce a table of all possible plots
-#' This table will have columns: 
-#' 
+#' This table will have columns:
+#'
 #'     - category
-#'     - shortname 
+#'     - shortname
 #'     - name
-#'     - plot 
+#'     - plot
 #'
 #' This function does not produce the plots, but simply leaves an empty list()
 #' item for each the place of each plot. Plots are produced by the calib_plots
 #' function.
-#' 
+#'
 #' @importFrom tibble tibble
 #' @inheritParams calib_plots
 all_possible_plots_df<-function(loc){

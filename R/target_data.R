@@ -1,4 +1,4 @@
-#' @inheritParams calib_plots 
+#' @inheritParams calib_plots
 target_data_list<-function(loc){
   loc1<-loc
   if (loc1 != "US") {loc2<-"ST"} else {loc2<-loc1}
@@ -14,9 +14,16 @@ target_data_list<-function(loc){
   mortality_target<-list.files(pattern="tot_mort",system.file(paste0(loc,"/calibration_targets/"),package = "MITUS"))
   mortality_target<-readRDS(system.file(paste0(loc1, "/calibration_targets/", mortality_target), package="MITUS"))
 ##  "Total TB Cases Identified",
-  TB_cases_target<-list.files(pattern=paste0(loc, "_fb_cases"),system.file(paste0(loc,"/calibration_targets/"),package = "MITUS"))
-  TB_cases_target<-readRDS(system.file(paste0(loc, "/calibration_targets/", TB_cases_target), package="MITUS"))
-  TB_cases_target<-cbind(TB_cases_target[,1], ((1-TB_cases_target[,2])*TB_cases_target[,3]),(TB_cases_target[,2]*TB_cases_target[,3]))
+  fb_TB_cases_target<-list.files(pattern=paste0(loc, "_fb_cases"),system.file(paste0(loc,"/calibration_targets/"),package = "MITUS"))
+  fb_TB_cases_target<-readRDS(system.file(paste0(loc, "/calibration_targets/", fb_TB_cases_target), package="MITUS"))
+  if (loc=="US"){
+  TB_cases_target<-list.files(pattern=paste0(loc, "_cases_yr"),system.file(paste0(loc,"/calibration_targets/"),package = "MITUS"))
+  TB_cases_target<-readRDS(system.file(paste0(loc, "/calibration_targets/", TB_cases_target), package="MITUS"))[41:64,]
+  } else {
+    TB_cases_target<-list.files(pattern=paste0(loc, "_cases_yr"),system.file(paste0(loc,"/calibration_targets/"),package = "MITUS"))
+    TB_cases_target<-readRDS(system.file(paste0(loc, "/calibration_targets/", TB_cases_target), package="MITUS"))
+  }
+  TB_cases_target<-cbind(TB_cases_target[,1], ((1-fb_TB_cases_target[,2])*TB_cases_target[,2]*1e6),(fb_TB_cases_target[,2]*TB_cases_target[,2]*1e6))
   colnames(TB_cases_target)<-c("Year", "USB Cases", "NUSB Cases")
 
   ##  "Total TB Cases Identified in Recent Years",

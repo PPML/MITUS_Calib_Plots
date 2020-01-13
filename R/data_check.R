@@ -4,7 +4,7 @@
 #' @param possible_plots A vector of possible plot shortnames
 #' @importFrom dplyr pull
 #' @return A logical vector indicating if data exist for each of possible_plots
-#'
+#' @export
 data_check<-function(loc, possible_plots){
   loc1<-loc
   if (loc1 != "US") {loc2<-"ST"} else {loc2<-loc1}
