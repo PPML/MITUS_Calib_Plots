@@ -146,16 +146,18 @@ calib_plt_tb_cases_nat_over_time <- function(loc) {
   #read in the target data
   #find file name
   #total cases
-  fn<-list.files(pattern="cases_yr",system.file(paste0(loc,"/calibration_targets/"),package = "MITUS"))
-  target_df_tot <-readRDS(system.file(paste0(loc,"/calibration_targets/",fn),package="MITUS"))
-  target_df_tot[,2] <-target_df_tot[,2]*1e3
-  #nativity stratification
-  fn<-list.files(pattern=paste0(loc, "_fb_cases"),system.file(paste0(loc,"/calibration_targets/"),package = "MITUS"))
-  target_df0 <-readRDS(system.file(paste0(loc,"/calibration_targets/",fn),package="MITUS"))  #read in the model output data
-  #format the data into a single dataframe
-  target_df1<-cbind(target_df0[,2],1-target_df0[,2])*target_df0[,3]
-  target_df1<-target_df1/1e3
-  target_df<-cbind(target_df_tot,c(rep(NA,nrow(target_df_tot)-nrow(target_df1)),target_df1[,1]),c(rep(NA,nrow(target_df_tot)-nrow(target_df1)),target_df1[,2]))
+  ##  "Total TB Cases Identified",
+  fb_TB_cases_target<-list.files(pattern=paste0(loc, "_fb_cases"),system.file(paste0(loc,"/calibration_targets/"),package = "MITUS"))
+  fb_TB_cases_target<-readRDS(system.file(paste0(loc, "/calibration_targets/", fb_TB_cases_target), package="MITUS"))
+  if (loc=="US"){
+    TB_cases_target<-list.files(pattern=paste0(loc, "_cases_yr"),system.file(paste0(loc,"/calibration_targets/"),package = "MITUS"))
+    TB_cases_target<-readRDS(system.file(paste0(loc, "/calibration_targets/", TB_cases_target), package="MITUS"))[41:64,]
+  } else {
+    TB_cases_target<-list.files(pattern=paste0(loc, "_cases_yr"),system.file(paste0(loc,"/calibration_targets/"),package = "MITUS"))
+    TB_cases_target<-readRDS(system.file(paste0(loc, "/calibration_targets/", TB_cases_target), package="MITUS"))
+  }
+  target_dfz<-cbind(TB_cases_target[,1], ((1-fb_TB_cases_target[,2])*TB_cases_target[,2]*1e3),(fb_TB_cases_target[,2]*TB_cases_target[,2]*1e3))
+  target_df<-cbind(target_dfz[,1], (target_dfz[,2]+target_dfz[,3]), target_dfz[,3],target_dfz[,2])
   #get the years
   years<-target_df[,1]
   target_df<-as.data.frame(target_df)
@@ -199,14 +201,25 @@ calib_plt_tb_cases_nat_over_time <- function(loc) {
 
 calib_plt_tb_cases_identified_over_ten_years <- function(loc) {
 
-  #read in the target data
-  #find file name
-  #total cases
-  fn<-list.files(pattern="cases_yr",system.file(paste0(loc,"/calibration_targets/"),package = "MITUS"))
-  target_df_tot <-readRDS(system.file(paste0(loc,"/calibration_targets/",fn),package="MITUS"))
-  target_df_tot[,2] <-target_df_tot[,2]*1e3 #scale up to per 1000s
+  fb_TB_cases_target<-list.files(pattern=paste0(loc, "_fb_cases"),system.file(paste0(loc,"/calibration_targets/"),package = "MITUS"))
+  fb_TB_cases_target<-readRDS(system.file(paste0(loc, "/calibration_targets/", fb_TB_cases_target), package="MITUS"))
+  if (loc=="US"){
+    TB_cases_target<-list.files(pattern=paste0(loc, "_cases_yr"),system.file(paste0(loc,"/calibration_targets/"),package = "MITUS"))
+    TB_cases_target<-readRDS(system.file(paste0(loc, "/calibration_targets/", TB_cases_target), package="MITUS"))[41:64,]
+  } else {
+    TB_cases_target<-list.files(pattern=paste0(loc, "_cases_yr"),system.file(paste0(loc,"/calibration_targets/"),package = "MITUS"))
+    TB_cases_target<-readRDS(system.file(paste0(loc, "/calibration_targets/", TB_cases_target), package="MITUS"))
+  }
+  target_dfz<-cbind(TB_cases_target[,1], ((1-fb_TB_cases_target[,2])*TB_cases_target[,2]*1e3),(fb_TB_cases_target[,2]*TB_cases_target[,2]*1e3))
+  target_df<-cbind(target_dfz[,1], (target_dfz[,2]+target_dfz[,3]), target_dfz[,3],target_dfz[,2])
+  #get the years
+  years<-target_df[,1]
+  target_df<-as.data.frame(target_df)
+  #update the column names for legend use
+  colnames(target_df)<-c("year", "total TB cases target", "non-US born TB cases target", "US born TB cases target")
+
   #get the last ten years
-  target_df_tot<-target_df_tot[(nrow(target_df_tot)-10):nrow(target_df_tot),]
+  target_df_tot<-target_df[(nrow(target_df)-10):nrow(target_df),]
   #get years
   years<-target_df_tot[,1]
   #nativity stratification
