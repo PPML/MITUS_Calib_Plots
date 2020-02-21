@@ -26,5 +26,10 @@ calib_plots<-function(loc, plots_subset = NULL){
     plots[[i,4]]<-make_plots(loc,as.character(plots[i,2]))
   }
 
+  # rename target_data_list(loc) -> target_data and 
+  # output_data_list(loc) -> model_estimate for brevity
+  #
+  colnames(plots)[5:6] <- c('target_data', 'model_estimate')
+
   return(plots)
 }
