@@ -125,7 +125,13 @@ calib_plt_deaths_over_time <- function(loc) {
   #reshape the outcomes data
   routcomes<-reshape2::melt(outcomes_df,id ="year" )
   #set up the plot options
-  ggplot() + theme_bw() +  scale_y_log10() + ylab("Deaths in Millions") + theme(legend.position="bottom") + guides(colour=guide_legend(override.aes=list(linetype=c(1,2)))) +
+  ggplot() + 
+    theme_bw() +  
+    scale_y_log10() + 
+    ylab("Deaths in Millions") + 
+    theme(legend.position="bottom") + 
+    guides(colour=guide_legend(override.aes=list(linetype=c(1,2)))) +
+    expand_limits(y=0) + 
     scale_x_continuous(breaks = c(seq(years[1],years[length(years)],10), years[length(years)])) +
     #add the target data
     geom_line(data=rtarget, aes(x=year, y=value, color=variable), linetype="dashed") +
@@ -619,7 +625,12 @@ calib_plt_tb_deaths_by_year <- function(loc) {
   #reshape the outcomes data
   routcomes<-reshape2::melt(outcomes_df,id ="year",color=variable)
   #set up the plot options
-  ggplot() + theme_bw() + ylab("Deaths with TB") + theme(legend.position="bottom") + guides(colour=guide_legend(override.aes=list(linetype=c(1,2)))) +
+  ggplot() + 
+    theme_bw() + 
+    ylab("Deaths with TB") + 
+    theme(legend.position="bottom") + 
+    guides(colour=guide_legend(override.aes=list(linetype=c(1,2)))) +
+    expand_limits(y=0) + 
     scale_x_continuous(breaks = years) +
     #add the target data
     geom_line(data=rtarget, aes(x=year, y=value,color=variable), linetype="dashed") +
