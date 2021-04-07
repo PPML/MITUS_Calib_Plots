@@ -24,7 +24,7 @@ calib_plt_pop_by_nat_over_time <- function(loc) {
   #update the column names for legend use
   colnames(target_df)<-c("year", "total pop. target", "US born pop. target", "non-US born pop. target")
   #format the outcomes data into one dataframe and update column names for legend
-  outcomes_df<-as.data.frame(cbind(1950:2017,(outcomes_df0[,1]+outcomes_df0[,2]),outcomes_df0[,1],outcomes_df0[,2]))
+  outcomes_df<-as.data.frame(cbind(1950:2019,(outcomes_df0[,1]+outcomes_df0[,2]),outcomes_df0[,1],outcomes_df0[,2]))
   colnames(outcomes_df)<-c("year", "total pop. model output", "US born pop. model output", "non-US born pop. model output")
   #reshape the target data
   rtarget<-reshape2::melt(target_df,id="year")
@@ -32,7 +32,7 @@ calib_plt_pop_by_nat_over_time <- function(loc) {
   routcomes<-reshape2::melt(outcomes_df,id ="year" )
   #set up the plot options
   ggplot() + theme_bw() +  scale_y_log10() + ylab("Population in Millions") + theme(legend.position="bottom") + guides(colour=guide_legend(override.aes=list(linetype=c(rep(c(1,2),times=3))))) +
-    scale_x_continuous(breaks = c(1950,1960,1970,1980,1990,2000,2010,2017)) +
+    scale_x_continuous(breaks = c(1950,1960,1970,1980,1990,2000,2010,2019)) +
     #add the target data
     geom_line(data=rtarget, aes(x=year, y=value, color=variable), linetype="dashed", alpha=.5) +
     #add the model output
@@ -89,7 +89,7 @@ calib_plt_pop_by_age_nat <- function(loc) {
     scale_color_manual("", values=c("red","dodgerblue2"))+
 
     #add plot title
-    ggtitle(paste0("Total Population 2016 in ", loc, " by Age and Nativity (mil)"))+
+    ggtitle(paste0("Total Population 2019 in ", loc, " by Age and Nativity (mil)"))+
     #add data source
     labs(caption="target data source: Current Population Survey 2016, US Census Bureau")
 }
@@ -125,13 +125,13 @@ calib_plt_deaths_over_time <- function(loc) {
   #reshape the outcomes data
   routcomes<-reshape2::melt(outcomes_df,id ="year" )
   #set up the plot options
-  ggplot() + 
-    theme_bw() +  
-    scale_y_log10() + 
-    ylab("Deaths in Millions") + 
-    theme(legend.position="bottom") + 
+  ggplot() +
+    theme_bw() +
+    scale_y_log10() +
+    ylab("Deaths in Millions") +
+    theme(legend.position="bottom") +
     guides(colour=guide_legend(override.aes=list(linetype=c(1,2)))) +
-    expand_limits(y=0) + 
+    expand_limits(y=0) +
     scale_x_continuous(breaks = c(seq(years[1],years[length(years)],10), years[length(years)])) +
     #add the target data
     geom_line(data=rtarget, aes(x=year, y=value, color=variable), linetype="dashed") +
@@ -157,7 +157,7 @@ calib_plt_tb_cases_nat_over_time <- function(loc) {
   fb_TB_cases_target<-readRDS(system.file(paste0(loc, "/calibration_targets/", fb_TB_cases_target), package="MITUS"))
   if (loc=="US"){
     TB_cases_target<-list.files(pattern=paste0(loc, "_cases_yr"),system.file(paste0(loc,"/calibration_targets/"),package = "MITUS"))
-    TB_cases_target<-readRDS(system.file(paste0(loc, "/calibration_targets/", TB_cases_target), package="MITUS"))[41:64,]
+    TB_cases_target<-readRDS(system.file(paste0(loc, "/calibration_targets/", TB_cases_target), package="MITUS"))[41:67,]
   } else {
     TB_cases_target<-list.files(pattern=paste0(loc, "_cases_yr"),system.file(paste0(loc,"/calibration_targets/"),package = "MITUS"))
     TB_cases_target<-readRDS(system.file(paste0(loc, "/calibration_targets/", TB_cases_target), package="MITUS"))
@@ -211,7 +211,7 @@ calib_plt_tb_cases_identified_over_ten_years <- function(loc) {
   fb_TB_cases_target<-readRDS(system.file(paste0(loc, "/calibration_targets/", fb_TB_cases_target), package="MITUS"))
   if (loc=="US"){
     TB_cases_target<-list.files(pattern=paste0(loc, "_cases_yr"),system.file(paste0(loc,"/calibration_targets/"),package = "MITUS"))
-    TB_cases_target<-readRDS(system.file(paste0(loc, "/calibration_targets/", TB_cases_target), package="MITUS"))[41:64,]
+    TB_cases_target<-readRDS(system.file(paste0(loc, "/calibration_targets/", TB_cases_target), package="MITUS"))[41:67,]
   } else {
     TB_cases_target<-list.files(pattern=paste0(loc, "_cases_yr"),system.file(paste0(loc,"/calibration_targets/"),package = "MITUS"))
     TB_cases_target<-readRDS(system.file(paste0(loc, "/calibration_targets/", TB_cases_target), package="MITUS"))
@@ -388,6 +388,8 @@ calib_plt_pct_cases_nusb <- function(loc) {
   target_df0<-target_df0[(nrow(target_df0)-10):nrow(target_df0),] #last 10 years
   ##set the parameter for years
   years<-target_df0[,1]
+  years[9]<-2017
+  target_df0[9,1]<-2017
   #set as dataframe
   target_df<-as.data.frame(target_df0)
   #update the column names for legend use
@@ -399,7 +401,7 @@ calib_plt_pct_cases_nusb <- function(loc) {
   outcomes_df0 <-readRDS(system.file(paste0(loc,"/calibration_outputs/",fn), package="MITUS"))
 
   #format the outcomes data into one dataframe and update column names for legend
-  outcomes_df<-cbind(years,(outcomes_df0[[3]][14:24]/outcomes_df0[[1]][54:64])*100)
+  outcomes_df<-cbind(years,(outcomes_df0[[3]][17:27]/outcomes_df0[[1]][57:67])*100)
   outcomes_df<-as.data.frame(outcomes_df)
   colnames(outcomes_df)<-c("year", "% cases non-US born model output")
   #reshape the target data
@@ -435,7 +437,7 @@ calib_plt_pct_cases_nusb_recent <- function(loc) {
   #read in the target data
   #find file name
   #FB stratification
-  fn<-list.files(pattern="fb_recent_cases",system.file(paste0(loc,"/calibration_targets/"),package = "MITUS"))
+  fn<-list.files(pattern="fb_recent_cases2",system.file(paste0(loc,"/calibration_targets/"),package = "MITUS"))
   target_df0 <-readRDS(system.file(paste0(loc,"/calibration_targets/",fn),package="MITUS"))  #read in the model output data
   target_df0<-target_df0[,-3] #keep year and percentage
   target_df0<-target_df0[(nrow(target_df0)-10):nrow(target_df0),] #last 10 years
@@ -452,7 +454,7 @@ calib_plt_pct_cases_nusb_recent <- function(loc) {
   outcomes_df0 <-readRDS(system.file(paste0(loc,"/calibration_outputs/",fn), package="MITUS"))
 
   #format the outcomes data into one dataframe and update column names for legend
-  outcomes_df<-cbind(years,outcomes_df0[12:22])
+  outcomes_df<-cbind(years,outcomes_df0[17:27])
   outcomes_df<-as.data.frame(outcomes_df)
   colnames(outcomes_df)<-c("year", "% non-US born cases from recent immigrants (<2yrs) model output")
   #reshape the target data
@@ -615,6 +617,7 @@ calib_plt_tb_deaths_by_year <- function(loc) {
   #find file name
   fn<-list.files(pattern="TBdeaths_",system.file(paste0(loc,"/calibration_outputs/"),package = "MITUS"))
   outcomes_df0 <-readRDS(system.file(paste0(loc,"/calibration_outputs/",fn), package="MITUS"))
+  outcomes_df0<-outcomes_df0[(length(outcomes_df0)-10):length(outcomes_df0)] #last 10 years
 
   #format the outcomes data into one dataframe and update column names for legend
   outcomes_df<-cbind(years,outcomes_df0*1e6)
@@ -625,12 +628,12 @@ calib_plt_tb_deaths_by_year <- function(loc) {
   #reshape the outcomes data
   routcomes<-reshape2::melt(outcomes_df,id ="year",color=variable)
   #set up the plot options
-  ggplot() + 
-    theme_bw() + 
-    ylab("Deaths with TB") + 
-    theme(legend.position="bottom") + 
+  ggplot() +
+    theme_bw() +
+    ylab("Deaths with TB") +
+    theme(legend.position="bottom") +
     guides(colour=guide_legend(override.aes=list(linetype=c(1,2)))) +
-    expand_limits(y=0) + 
+    expand_limits(y=0) +
     scale_x_continuous(breaks = years) +
     #add the target data
     geom_line(data=rtarget, aes(x=year, y=value,color=variable), linetype="dashed") +
