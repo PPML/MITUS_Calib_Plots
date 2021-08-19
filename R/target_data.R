@@ -18,7 +18,7 @@ target_data_list<-function(loc){
   fb_TB_cases_target<-readRDS(system.file(paste0(loc, "/calibration_targets/", fb_TB_cases_target), package="MITUS"))
   if (loc=="US"){
   TB_cases_target<-list.files(pattern=paste0(loc, "_cases_yr"),system.file(paste0(loc,"/calibration_targets/"),package = "MITUS"))
-  TB_cases_target<-readRDS(system.file(paste0(loc, "/calibration_targets/", TB_cases_target), package="MITUS"))[41:64,]
+  TB_cases_target<-readRDS(system.file(paste0(loc, "/calibration_targets/", TB_cases_target), package="MITUS"))[41:67,]
   } else {
     TB_cases_target<-list.files(pattern=paste0(loc, "_cases_yr"),system.file(paste0(loc,"/calibration_targets/"),package = "MITUS"))
     TB_cases_target<-readRDS(system.file(paste0(loc, "/calibration_targets/", TB_cases_target), package="MITUS"))
@@ -42,7 +42,8 @@ target_data_list<-function(loc){
   NUS_cases_target<-readRDS(system.file(paste0(loc1, "/calibration_targets/", NUS_cases_target), package="MITUS"))
 
   ##  "Percent of Non-US Born TB Cases Arrived in Past 2 Years",
-  NUS_recent_cases_target<-list.files(pattern="fb_recent_cases",system.file(paste0(loc,"/calibration_targets/"),package = "MITUS"))
+  #CHECK THAT THIS IS THE RIGHT OUTPUT
+  NUS_recent_cases_target<-list.files(pattern="fb_recent_cases2",system.file(paste0(loc,"/calibration_targets/"),package = "MITUS"))
   NUS_recent_cases_target<-readRDS(system.file(paste0(loc1, "/calibration_targets/",   NUS_recent_cases_target), package="MITUS"))
 
   ##  "LTBI in US Born Population by Age",
