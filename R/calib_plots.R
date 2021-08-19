@@ -1,12 +1,12 @@
 #' Produce a tibble with calibration plots from MITUS
-#' 
+#'
 #' Given a location (`loc`), `calib_plots(loc)` produces a tibble containing
 #' four columns, the last of which is plots and contains ggplot2 plots. The
-#' plots are provided description in the other columns. 
-#' 
-#' @param loc A two-letter code for the location 
+#' plots are provided description in the other columns.
+#'
+#' @param loc A two-letter code for the location
 #' @param plots_subset (optional) a subset of shortnames to use to select which
-#' plots are computed and not included in the return value plots. 
+#' plots are computed and not included in the return value plots.
 #' @return A tibble with 6 columns: category, shortname, name, plot, target_data, output_data
 #' @export
 calib_plots<-function(loc, plots_subset = NULL){
@@ -23,10 +23,11 @@ calib_plots<-function(loc, plots_subset = NULL){
 
   #make the plots
   for (i in 1:nrow(plots)){
-    plots[[i,4]]<-make_plots(loc,as.character(plots[i,2]))
+    print(i)
+    plots[[i,4]]<-list(make_plots(loc,as.character(plots[i,2])))
   }
 
-  # rename target_data_list(loc) -> target_data and 
+  # rename target_data_list(loc) -> target_data and
   # output_data_list(loc) -> model_estimate for brevity
   #
   colnames(plots)[5:6] <- c('target_data', 'model_estimate')
