@@ -12,6 +12,8 @@ make_plots<-function(loc,short_name){
 
            "TB_Cases_Recent_Time"=calib_plt_tb_cases_identified_over_ten_years(loc),
 
+           "TB_Cases_Nativity"=calib_plt_tb_cases_nat_dist(loc),
+
            "TB_Cases_Age"=calib_plt_tb_cases_age_dist(loc),
 
            "TB_Cases_Age_Time"=calib_plt_tb_cases_age_over_time(loc),

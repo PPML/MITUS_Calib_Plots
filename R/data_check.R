@@ -9,7 +9,7 @@ data_check<-function(loc, possible_plots){
   loc1<-loc
   if (loc1 != "US") {loc2<-"ST"} else {loc2<-loc1}
   # plot_names<-as.vector(possible_plots[,2])
-  available_plots<-rep(NA,14)
+  available_plots<-rep(NA,15)
   names(available_plots)<-dplyr::pull(possible_plots,shortname)
   #LTBI Prevalence in US Born Individuals by Age
   if(
@@ -48,6 +48,13 @@ data_check<-function(loc, possible_plots){
     available_plots["Total_Population"]<-TRUE
   } else {
     available_plots["Total_Population"]<-FALSE
+  }
+  #TB Cases by Nativity
+  if(
+    length(list.files(pattern="ag_nat_cases_5yr",system.file(paste0(loc,"/calibration_targets/"),package = "MITUS")))==1 &
+    length(list.files(pattern="TBcases",system.file(paste0(loc,"/calibration_outputs/"),package = "MITUS")))==1){
+    available_plots["TB_Cases_Nativity"]<-TRUE
+  } else {    available_plots["TB_Cases_Nativity"]<-FALSE
   }
   #TB Cases by Age
   if(

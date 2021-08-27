@@ -29,6 +29,25 @@ target_data_list<-function(loc){
   ##  "Total TB Cases Identified in Recent Years",
   TB_cases_10yr_target<-TB_cases_target[(nrow(TB_cases_target)-9):nrow(TB_cases_target),]
 
+  ##  "Total TB Cases by Nativity",
+  fn<-list.files(pattern="ag_nat_cases_5yr",system.file(paste0(loc,"/calibration_targets/"),package = "MITUS"))
+  #subset into 20010-2019
+  target_df0 <-readRDS(system.file(paste0(loc,"/calibration_targets/",fn),package="MITUS"))
+
+  target_df0<-rbind(target_df0[((nrow(target_df0)/2)-1):(nrow(target_df0)/2),], #last 10 years
+                      target_df0[(nrow(target_df0)-1):nrow(target_df0),] )#last 10 years
+
+  target_df <-cbind(rowSums(target_df0[1,5:14]), rowSums(target_df0[3,5:14]),
+                    rowSums(target_df0[2,5:14]), rowSums(target_df0[4,5:14]))
+  #set the years
+  # years<-target_df0[,1]
+  years <-2010:2019
+  #update the column names for legend use
+  label<-c("2010-2014 USB", "2010-2014 NUSB", "2015-2019 USB", "2015-2019 NUSB")
+  TB_cases_nativity_target<-data.frame("label" = label,
+                        "cases" = t(target_df))
+  colnames(TB_cases_nativity_target) <-c("label", "cases")
+
   ##  "Total TB Cases by Age",
   TB_cases_age_target<-list.files(pattern="age_cases_tot",system.file(paste0(loc,"/calibration_targets/"),package = "MITUS"))
   TB_cases_age_target<-readRDS(system.file(paste0(loc1, "/calibration_targets/", TB_cases_age_target), package="MITUS"))
@@ -43,7 +62,11 @@ target_data_list<-function(loc){
 
   ##  "Percent of Non-US Born TB Cases Arrived in Past 2 Years",
   #CHECK THAT THIS IS THE RIGHT OUTPUT
+  if (loc1 == "US"){
   NUS_recent_cases_target<-list.files(pattern="fb_recent_cases2",system.file(paste0(loc,"/calibration_targets/"),package = "MITUS"))
+  } else {
+    NUS_recent_cases_target<-list.files(pattern="fb_recent_cases",system.file(paste0(loc,"/calibration_targets/"),package = "MITUS"))
+  }
   NUS_recent_cases_target<-readRDS(system.file(paste0(loc1, "/calibration_targets/",   NUS_recent_cases_target), package="MITUS"))
 
   ##  "LTBI in US Born Population by Age",
@@ -72,6 +95,7 @@ target_data_list<-function(loc){
     mortality_target,
     TB_cases_target,
     TB_cases_10yr_target,
+    TB_cases_nativity_target,
     TB_cases_age_target,
     TB_cases_age_time_target,
     NUS_cases_target,

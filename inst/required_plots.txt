@@ -1,5 +1,6 @@
 Total_Population
 TB_Cases_Recent_Time
+TB_Cases_Nativity
 TB_Cases_Age
 ltbi_prev_US
 ltbi_prev_NUS

@@ -28,6 +28,19 @@ output_data_list<-function(loc){
   ##  "Total TB Cases Identified in Recent Years",
   TB_cases_10yr_output<-TB_cases_output[(nrow(TB_cases_output)-9):nrow(TB_cases_output),]
 
+  ##  "Total TB Cases by Nativity",
+  fn<-list.files(pattern="TBcases",system.file(paste0(loc,"/calibration_outputs/"),package = "MITUS"))
+  outcomes_df0 <-readRDS(system.file(paste0(loc,"/calibration_outputs/",fn), package="MITUS"))
+  #get the last ten years
+  outcomes_df_us<-outcomes_df0[[2]][(length(outcomes_df0[[2]]))-9:length(outcomes_df0[[2]])] #last 10 years
+  outcomes_df_nus<-outcomes_df0[[3]][(length(outcomes_df0[[3]]))-9:length(outcomes_df0[[3]])] #last 10 years
+
+  #sum across years
+  outcomes_df<-c(sum(outcomes_df_us[1:5]), sum(outcomes_df_nus[1:5]), sum(outcomes_df_us[6:10]), sum(outcomes_df_nus[6:10]))*1e6
+  label<-c("2010-2014 USB", "2010-2014 NUSB", "2015-2019 USB", "2015-2019 NUSB")
+  TB_cases_nativity_output<-data.frame("label" = label,
+                          "cases" = outcomes_df)
+
   ##  "Total TB Cases by Age",
   TB_cases_age_output<-list.files(pattern="age_cases_tot",system.file(paste0(loc,"/calibration_outputs/"),package = "MITUS"))
   outcomes_df0<-readRDS(system.file(paste0(loc, "/calibration_outputs/", TB_cases_age_output), package="MITUS"))
@@ -90,6 +103,7 @@ output_data_list<-function(loc){
     mortality_output,
     TB_cases_output,
     TB_cases_10yr_output,
+    TB_cases_nativity_output,
     TB_cases_age_output,
     TB_cases_age_time_output,
     NUS_cases_output,
