@@ -22,10 +22,10 @@ calib_plt_pop_by_nat_over_time <- function(loc) {
   outcomes_df0 <-as.data.frame(readRDS(system.file(paste0(loc,"/calibration_outputs/",fn), package="MITUS")))
 
   #update the column names for legend use
-  colnames(target_df)<-c("year", "total pop. target", "US born pop. target", "non-US born pop. target")
+  colnames(target_df)<-c("year", "total pop. target", "US born pop. target", "Non-US born pop. target")
   #format the outcomes data into one dataframe and update column names for legend
   outcomes_df<-as.data.frame(cbind(1950:2019,(outcomes_df0[,1]+outcomes_df0[,2]),outcomes_df0[,1],outcomes_df0[,2]))
-  colnames(outcomes_df)<-c("year", "total pop. model output", "US born pop. model output", "non-US born pop. model output")
+  colnames(outcomes_df)<-c("year", "total pop. model output", "US born pop. model output", "Non-US born pop. model output")
   #reshape the target data
   rtarget<-reshape2::melt(target_df,id="year")
   #reshape the outcomes data
@@ -40,9 +40,9 @@ calib_plt_pop_by_nat_over_time <- function(loc) {
     #add legend
     scale_color_manual(name = "", values=c("red","red","black","grey20","dodgerblue2","dodgerblue2"))+
     #add plot title
-    ggtitle(paste0(loc, " Population: Total, US Born, & Non-US Born (mil, log-scale)"))+
+    ggtitle(paste0(loc, " Population: Total, US Born, & Non-US born (mil, log-scale)"))+
     #add data source
-    labs(caption="target data source: decennial census, US Census Bureau")
+    labs(caption="Target data source: decennial census, US Census Bureau")
 }
 
 # ----------------------------------------------------------------------------
@@ -60,25 +60,26 @@ calib_plt_pop_by_age_nat <- function(loc) {
   target_df<-target_df0[1:8,3:4]
 
   #update the column names for legend use
-  label<-c("0-4 years","5-24 years",
-           "25-44 years","45-54 years",
-           "55-64 years","65-74 years","75-84 years","85+ years")
+  label<-c("0-4\nyears","5-24\nyears",
+           "25-44\nyears","45-54\nyears",
+           "55-64\nyears","65-74\nyears",
+           "75-84\nyears","85+\nyears")
   target_df<-cbind(label,target_df)
-  target_df<-as.data.frame(target_df); colnames(target_df)<-c("Age","US-Born target","non-US Born target")
+  target_df<-as.data.frame(target_df); colnames(target_df)<-c("Age","US-born\ntarget","Non-US born\ntarget")
   #read in the model output data
   #find file name
   fn<-list.files(pattern="pop_ag_nat",system.file(paste0(loc,"/calibration_outputs/"),package = "MITUS"))
   outcomes_df0 <-readRDS(system.file(paste0(loc,"/calibration_outputs/",fn), package="MITUS"))
   outcomes_df<-as.data.frame(outcomes_df0)
   outcomes_df<-cbind(label,outcomes_df)
-  colnames(outcomes_df)<-c("Age","US-Born model output","non-US Born model output")
+  colnames(outcomes_df)<-c("Age","US-born\nmodel output","Non-US born\nmodel output")
   #reshape the target data
   rtarget<-reshape2::melt(target_df,id="Age")
   #reshape the outcomes data
   routcomes<-reshape2::melt(outcomes_df,id="Age")
-  if (loc != "US")  routcomes$value<-routcomes$value*1e6
+  if (loc != "US")  rtarget$value<-rtarget$value/1e6
   #set up the plot options
-    ggplot() + theme_bw() +  ylab("") +xlab("Age Group")+ theme(legend.position="bottom") +
+    ggplot() + theme_bw() +  ylab("") +xlab("Age group")+ theme(legend.position="bottom") +
       scale_x_discrete(limits=label)+
       #add the model output
       geom_col(data=routcomes, aes(x=rep(label,2), y=value, fill=variable), position="dodge", alpha=0.3) +
@@ -89,9 +90,9 @@ calib_plt_pop_by_age_nat <- function(loc) {
       scale_color_manual("", values=c("red","dodgerblue2"))+
 
       #add plot title
-      ggtitle(paste0("Total Population 2019 in ", loc, " by Age and Nativity (mil)"))+
+      ggtitle(paste0("Total population 2019 in ", loc, " by age and nativity (mil)"))+
       #add data source
-      labs(caption="target data source: Current Population Survey 2019, US Census Bureau")
+      labs(caption="Target data source: American Community Survey, 2019, US Census Bureau")
 }
 
 # ----------------------------------------------------------------------------
@@ -111,7 +112,7 @@ calib_plt_deaths_over_time <- function(loc) {
   #update the column names for legend use
   target_df[,2]<-target_df[,2]/1e6
   target_df<-as.data.frame(target_df)
-  colnames(target_df)<-c("year", "total deaths target")
+  colnames(target_df)<-c("year", "Total deaths target")
 
   #get years
   years<-target_df[,1]
@@ -119,7 +120,7 @@ calib_plt_deaths_over_time <- function(loc) {
   outcomes_df1<-outcomes_df0[years-1949,]
   #format the outcomes data into one dataframe and update column names for legend
   outcomes_df<-as.data.frame(cbind(years,outcomes_df1))
-  colnames(outcomes_df)<-c("year", "total deaths model output")
+  colnames(outcomes_df)<-c("year", "Total deaths model output")
   #reshape the target data
   rtarget<-reshape2::melt(target_df,id="year")
   #reshape the outcomes data
@@ -142,7 +143,7 @@ calib_plt_deaths_over_time <- function(loc) {
     #add plot title
     ggtitle(paste0("Total Death Counts in ", loc," (mil, log-scale)"))+
     #add data source
-    labs(caption="target data source: Human Mortality Database")
+    labs(caption="Target data source: Human Mortality Database")
 }
 
 # ----------------------------------------------------------------------------
@@ -152,7 +153,7 @@ calib_plt_tb_cases_nat_over_time <- function(loc) {
   #read in the target data
   #find file name
   #total cases
-  ##  "Total TB Cases Identified",
+  ##  "Total TB cases identified",
   if (loc=="US"){
   fb_TB_cases_target<-list.files(pattern=paste0(loc, "_fb_cases"),system.file(paste0(loc,"/calibration_targets/"),package = "MITUS"))
   fb_TB_cases_target<-readRDS(system.file(paste0(loc, "/calibration_targets/", fb_TB_cases_target), package="MITUS"))
@@ -169,7 +170,7 @@ calib_plt_tb_cases_nat_over_time <- function(loc) {
   years<-target_df[,1]
   target_df<-as.data.frame(target_df)
   #update the column names for legend use
-  colnames(target_df)<-c("year", "total TB cases target", "non-US born TB cases target", "US born TB cases target")
+  colnames(target_df)<-c("year", "Total TB cases target", "Non-US born TB cases target", "US born TB cases target")
 
   #read in the model output data
   #find file name
@@ -184,13 +185,13 @@ calib_plt_tb_cases_nat_over_time <- function(loc) {
   outcomes_df<-outcomes_df1[years-1952,]
   outcomes_df<-cbind(years,outcomes_df)
   outcomes_df<-as.data.frame(outcomes_df)
-  colnames(outcomes_df)<-c("year", "total TB cases model output", "US born TB cases model output", "non-US born TB cases model output")
+  colnames(outcomes_df)<-c("year", "total TB cases model output", "US born TB cases model output", "Non-US born TB cases model output")
   #reshape the target data
   rtarget<-reshape2::melt(target_df,id="year",color=variable)
   #reshape the outcomes data
   routcomes<-reshape2::melt(outcomes_df,id ="year",color=variable)
   #set up the plot options
-  ggplot() + theme_bw() + ylab("TB Cases (000s) ") + theme(legend.position="bottom") + guides(colour=guide_legend(override.aes=list(linetype=c(rep(c(1,2),times=3))))) +
+  ggplot() + theme_bw() + ylab("TB cases (000s) ") + theme(legend.position="bottom") + guides(colour=guide_legend(override.aes=list(linetype=c(rep(c(1,2),times=3))))) +
     scale_x_continuous(breaks = c(years[1],seq(years[1],years[length(years)],10), years[length(years)])) +
     #add the target data
     geom_line(data=rtarget, aes(x=year, y=value,color=variable), linetype="dashed") +
@@ -199,9 +200,9 @@ calib_plt_tb_cases_nat_over_time <- function(loc) {
     #add legend
     scale_color_manual(name = "", values=c("green","green","black","black","blue","blue"))+
     #add plot title
-    ggtitle(paste0("Total TB Cases Identified (000s) in ",loc," ",years[1], "-", years[length(years)]))+
+    ggtitle(paste0("Total TB cases identified (000s) in ",loc," ",years[1], "-", years[length(years)]))+
     #add data source
-    labs(caption="target data source: Online Tuberculosis Information System (OTIS)")
+    labs(caption="Target data source: Online Tuberculosis Information System (OTIS)")
 }
 }
 
@@ -223,7 +224,7 @@ calib_plt_tb_cases_identified_over_ten_years <- function(loc) {
   years<-target_df[,1]
   target_df<-as.data.frame(target_df)
   #update the column names for legend use
-  colnames(target_df)<-c("year", "total TB cases target", "non-US born TB cases target", "US born TB cases target")
+  colnames(target_df)<-c("year", "Total TB cases target", "Non-US born TB cases target", "US born TB cases target")
 
   #get the last ten years
   target_df_tot<-target_df[(nrow(target_df)-10):nrow(target_df),]
@@ -241,7 +242,7 @@ calib_plt_tb_cases_identified_over_ten_years <- function(loc) {
   #scale down to thousands
   # target_df[,2:4] <-target_df[,2:4]
   #update the column names for legend use
-  colnames(target_df)<-c("year", "total TB cases target", "non-US born TB cases target", "US born TB cases target")
+  colnames(target_df)<-c("year", "Total TB cases target", "Non-US born TB cases target", "US born TB cases target")
 
   #read in the model output data
   #find file name
@@ -253,13 +254,13 @@ calib_plt_tb_cases_identified_over_ten_years <- function(loc) {
                      outcomes_df0[[2]][(length(outcomes_df0[[2]])-10):length(outcomes_df0[[2]])]*1e3,
                      outcomes_df0[[3]][(length(outcomes_df0[[3]])-10):length(outcomes_df0[[3]])]*1e3)
   outcomes_df<-as.data.frame(outcomes_df)
-  colnames(outcomes_df)<-c("year", "total TB cases model output", "US born TB cases model output", "non-US born TB cases model output")
+  colnames(outcomes_df)<-c("year", "total TB cases model output", "US born TB cases model output", "Non-US born TB cases model output")
   #reshape the target data
   rtarget<-reshape2::melt(target_df,id="year",color=variable)
   #reshape the outcomes data
   routcomes<-reshape2::melt(outcomes_df,id ="year",color=variable)
   #set up the plot options
-  ggplot() + theme_bw() + ylab("TB Cases (000s) ") + theme(legend.position="bottom") + guides(colour=guide_legend(override.aes=list(linetype=c(rep(c(1,2),times=3))))) +
+  ggplot() + theme_bw() + ylab("TB cases (000s) ") + theme(legend.position="bottom") + guides(colour=guide_legend(override.aes=list(linetype=c(rep(c(1,2),times=3))))) +
     scale_x_continuous(breaks = years) +
     expand_limits(y=0) +
     #add the target data
@@ -269,18 +270,19 @@ calib_plt_tb_cases_identified_over_ten_years <- function(loc) {
     #add legend
     scale_color_manual(name = "", values=c("green","green","black","black","blue","blue"))+
     #add plot title
-    ggtitle(paste0("Total TB Cases Identified (000s) in ",loc," ", years[1],"-",years[length(years)]))+
+    ggtitle(paste0("Total TB cases identified (000s) in ",loc," ", years[1],"-",years[length(years)]))+
     #add data source
-    labs(caption="target data source: Online Tuberculosis Information System (OTIS)")
+    labs(caption="Target data source: Online Tuberculosis Information System (OTIS)")
   } else {
 
     TB_cases_target<-list.files(pattern=paste0(loc, "_cases_yr"),system.file(paste0(loc,"/calibration_targets/"),package = "MITUS"))
     TB_cases_target<-readRDS(system.file(paste0(loc, "/calibration_targets/", TB_cases_target), package="MITUS"))
     target_df <- TB_cases_target
+    target_df[,2] <- target_df[,2]*1e3
 
     target_df<-as.data.frame(target_df)
     #update the column names for legend use
-    colnames(target_df)<-c("year", "total TB cases target")
+    colnames(target_df)<-c("year", "Total TB cases target")
 
     #get the last ten years
     target_df<-target_df[(nrow(target_df)-9):nrow(target_df),]
@@ -294,17 +296,18 @@ calib_plt_tb_cases_identified_over_ten_years <- function(loc) {
     outcomes_df0 <-readRDS(system.file(paste0(loc,"/calibration_outputs/",fn), package="MITUS"))
 
     #format the outcomes data into one dataframe and update column names for legend
-    outcomes_df<-cbind(years,outcomes_df0[[1]][(length(outcomes_df0[[1]])-9):length(outcomes_df0[[1]])]*1e3)
+    outcomes_df<-cbind(years,outcomes_df0[[1]][(length(outcomes_df0[[1]])-9):length(outcomes_df0[[1]])]*1e6)
     outcomes_df<-as.data.frame(outcomes_df)
     colnames(outcomes_df)<-c("year", "total TB cases model output")
     #reshape the target data
     rtarget<-reshape2::melt(target_df,id="year",color=variable)
     #reshape the outcomes data
     routcomes<-reshape2::melt(outcomes_df,id ="year",color=variable)
+
     #set up the plot options
-    ggplot() + theme_bw() + ylab("TB Cases (000s) ") + theme(legend.position="bottom") + guides(colour=guide_legend(override.aes=list(linetype=c(1,2)))) +
+    ggplot() + theme_bw() + ylab("TB cases") + theme(legend.position="bottom") + guides(colour=guide_legend(override.aes=list(linetype=c(1,2)))) +
       scale_x_continuous(breaks = years) +
-      expand_limits(y=0) +
+      expand_limits(y=c(0,max(routcomes$value,rtarget$value)*1.3)) +
       #add the target data
       geom_line(data=rtarget, aes(x=year, y=value,color=variable), linetype="dashed", alpha=.5) +
       #add the model output
@@ -312,9 +315,9 @@ calib_plt_tb_cases_identified_over_ten_years <- function(loc) {
       #add legend
       scale_color_manual(name = "", values=c("black","black"))+
       #add plot title
-      ggtitle(paste0("Total TB Cases Identified (000s) in ",loc," ", years[1],"-",years[length(years)]))+
+      ggtitle(paste0("Total TB cases identified in ",loc," ", years[1],"-",years[length(years)]))+
       #add data source
-      labs(caption="target data source: Online Tuberculosis Information System (OTIS)")
+      labs(caption="Target data source: Online Tuberculosis Information System (OTIS)")
 
   }
 }
@@ -355,7 +358,7 @@ calib_plt_tb_cases_nat_dist <- function(loc) {
   outcomes_df<-data.frame("label" = label,
                              "cases" = outcomes_df)
   #set up the plot options
-  ggplot() + theme_bw() + ylab("% of Cases") +xlab("Nativity and Years")+ theme(legend.position="bottom") +
+  ggplot() + theme_bw() + ylab("% of cases") +xlab("Nativity and years")+ theme(legend.position="bottom") +
     scale_x_discrete(limits=label)+
     #add the model output
     geom_col(data=outcomes_df, aes(x=label, y=cases, fill=c("dodgerblue2", "red","dodgerblue2", "red")), alpha=.5) +
@@ -363,11 +366,11 @@ calib_plt_tb_cases_nat_dist <- function(loc) {
     geom_point(data=target_df, aes(x=label, y=cases, color="black") ) +
     #add legend
     scale_color_manual("", values="black", label="TB cases target")+
-    scale_fill_manual("", values=c("dodgerblue2", "red"), label=c("US born TB cases model output","NUS born TB cases model output"))+
+    scale_fill_manual("", values=c("dodgerblue2", "red"), label=c("US born TB cases\nmodel output","Non-US born TB cases\nmodel output"))+
     #add plot title
     ggtitle(paste0("Nativity distribution of TB cases in ", loc, " ",  years[1], "-", years[length(years)]))+
     #add data source
-    labs(caption="target data source: Online Tuberculosis Information System (OTIS)")
+    labs(caption="Target data source: Online Tuberculosis Information System (OTIS)")
 }
 
 # ----------------------------------------------------------------------------
@@ -392,9 +395,9 @@ calib_plt_tb_cases_age_dist <- function(loc) {
   # years<-target_df0[,1]
   years <-2010:2019
   #update the column names for legend use
-  label<-c("0-4 years","5-14 years","15-24 years ",
-           "25-34 years","35-44 years","45-54 years",
-           "55-64 years","65-74 years","75-84 years","85+ years")
+  label<-c("0-4\nyears","5-14\nyears","15-24\nyears ",
+           "25-34\nyears","35-44\nyears","45-54\nyears",
+           "55-64\nyears","65-74\nyears","75-84\nyears","85+\nyears")
   names(target_df)<-label
   target_df<-as.data.frame(target_df); colnames(target_df)<-"percentage"
   #read in the model output data
@@ -403,14 +406,14 @@ calib_plt_tb_cases_age_dist <- function(loc) {
   outcomes_df0 <-readRDS(system.file(paste0(loc,"/calibration_outputs/",fn), package="MITUS"))
   #get the last ten years
   outcomes_df0<-outcomes_df0[(nrow(outcomes_df0)-10):nrow(outcomes_df0),] #last 10 years
-  #add the last two age groups
+  #add the last two Age groups
   outcomes_df1<-outcomes_df0[,-12]; outcomes_df1[,11]<-outcomes_df1[,11]+outcomes_df0[,12]
   #sum across years
   outcomes_df<-(colSums(outcomes_df1[,2:11])/sum(outcomes_df1[,2:11]))*100
   outcomes_df<-as.data.frame(outcomes_df)
   rownames(outcomes_df)<-label;colnames(outcomes_df)<-"percentage"
   #set up the plot options
-  ggplot() + theme_bw() + ylab("") + ylab("% of Cases") + xlab("Age Group")+ theme(legend.position="bottom") +
+  ggplot() + theme_bw() + ylab("") + ylab("% of cases") + xlab("Age group")+ theme(legend.position="bottom") +
     scale_x_discrete(limits=label)+
     #add the model output
     geom_col(data=outcomes_df, aes(x=label, y=percentage, fill="dodgerblue1"), alpha=.5) +
@@ -422,7 +425,7 @@ calib_plt_tb_cases_age_dist <- function(loc) {
     #add plot title
     ggtitle(paste0("Age distribution of TB cases in ", loc, " ",  years[1], "-", years[length(years)]))+
     #add data source
-    labs(caption="target data source: Online Tuberculosis Information System (OTIS)")
+    labs(caption="Target data source: Online Tuberculosis Information System (OTIS)")
 }
 
 # ----------------------------------------------------------------------------
@@ -470,13 +473,13 @@ calib_plt_tb_cases_age_over_time <- function(loc) {
     #create the dashes in the legend
     # scale_linetype_manual(values = c(rep("dotted",4),1,1,1,1))+
     #add plot title
-    ggtitle(paste0("TB Cases in ", loc, " by Age ", years[1], "-", years[length(years)]))+
+    ggtitle(paste0("TB cases in ", loc, " by age ", years[1], "-", years[length(years)]))+
     #add data source
-    labs(caption="target data source: Online Tuberculosis Information System (OTIS)")
+    labs(caption="Target data source: Online Tuberculosis Information System (OTIS)")
 }
 
 # ----------------------------------------------------------------------------
-#' Plot Percent of TB Cases in Non-US-Born Individuals
+#' Plot Percent of TB Cases in Non-US-born Individuals
 
 calib_plt_pct_cases_nusb <- function(loc) {
   #set the location
@@ -495,7 +498,7 @@ calib_plt_pct_cases_nusb <- function(loc) {
   #set as dataframe
   target_df<-as.data.frame(target_df0)
   #update the column names for legend use
-  colnames(target_df)<-c("year", "% cases non-US born target")
+  colnames(target_df)<-c("year", "% population Non-US born target")
 
   #read in the model output data
   #find file name
@@ -505,7 +508,7 @@ calib_plt_pct_cases_nusb <- function(loc) {
   #format the outcomes data into one dataframe and update column names for legend
   outcomes_df<-cbind(years,(outcomes_df0[[3]][17:27]/outcomes_df0[[1]][57:67])*100)
   outcomes_df<-as.data.frame(outcomes_df)
-  colnames(outcomes_df)<-c("year", "% cases non-US born model output")
+  colnames(outcomes_df)<-c("year", "% cases Non-US born model output")
   #reshape the target data
   rtarget<-reshape2::melt(target_df,id="year")
   #reshape the outcomes data
@@ -524,15 +527,15 @@ calib_plt_pct_cases_nusb <- function(loc) {
     #add legend
     scale_color_manual(name = "", values=c("blue","black")) +
     #add plot title
-    ggtitle(paste0("Percent of TB Cases Non-US Born in ",loc," ", years[1],"-", years[11]))+
+    ggtitle(paste0("Percent of TB cases non-US born in ",loc," ", years[1],"-", years[11]))+
     #add data source
-    labs(caption="target data source: Online Tuberculosis Information System (OTIS)")
+    labs(caption="Target data source: Online Tuberculosis Information System (OTIS)")
 
 }
 
 # ----------------------------------------------------------------------------
 
-#' Plot Percent of non-US born TB cases from recent immigrants (<2 yrs)
+#' Plot Percent of Non-US born TB cases from recent immigrants (<2 yrs)
 
 calib_plt_pct_cases_nusb_recent <- function(loc) {
 
@@ -548,7 +551,7 @@ calib_plt_pct_cases_nusb_recent <- function(loc) {
   target_df<-as.data.frame(target_df0)
 
   #update the column names for legend use
-  colnames(target_df)<-c("year", "% non-US born cases from recent immigrants (<2yrs) target")
+  colnames(target_df)<-c("year", "% Non-US born cases from recent immigrants (<2yrs) target")
 
   #read in the model output data
   #find file name
@@ -558,7 +561,7 @@ calib_plt_pct_cases_nusb_recent <- function(loc) {
   #format the outcomes data into one dataframe and update column names for legend
   outcomes_df<-cbind(years,outcomes_df0[17:27])
   outcomes_df<-as.data.frame(outcomes_df)
-  colnames(outcomes_df)<-c("year", "% non-US born cases from recent immigrants (<2yrs) model output")
+  colnames(outcomes_df)<-c("year", "% Non-US born cases from recent immigrants (<2yrs) model output")
   #reshape the target data
   rtarget<-reshape2::melt(target_df,id="year",color=variable)
   #reshape the outcomes data
@@ -581,11 +584,11 @@ calib_plt_pct_cases_nusb_recent <- function(loc) {
     #add plot title
     ggtitle(paste0("Percent of non-US born TB cases from recent immigrants (<2yrs) in ",loc," ", years[1],"-", years[11]))+
     #add data source
-    labs(caption="target data source: Online Tuberculosis Information System (OTIS)")
+    labs(caption="Target data source: Online Tuberculosis Information System (OTIS)")
 }
 
 # ----------------------------------------------------------------------------
-#' Plot LTBI Prevalence in Non-US-Born Individuals by Age
+#' Plot LTBI Prevalence in Non-US-born Individuals by Age
 
 calib_plt_us_ltbi_by_age <- function(loc) {
 
@@ -601,9 +604,9 @@ calib_plt_us_ltbi_by_age <- function(loc) {
   target_df<-as.data.frame(target_df0[,2]/rowSums(target_df0[,2:3])*100)
   #update the column names for legend use
 
-  label<-c("5-14 years","15-24 years ",
-           "25-34 years","35-44 years","45-54 years",
-           "55-64 years","65-74 years","75+ years")
+  label<-c("5-14\nyears","15-24\nyears ",
+           "25-34\nyears","35-44\nyears","45-54\nyears",
+           "55-64\nyears","65-74\nyears","75+\nyears")
   rownames(target_df)<-label
   target_df<-as.data.frame(target_df); colnames(target_df)<-"percentage"
   #read in the model output data
@@ -619,7 +622,7 @@ calib_plt_us_ltbi_by_age <- function(loc) {
   colnames(error_df)[2:4] <- c('lower', 'upper', 'target')
 
   #set up the plot options
-  ggplot() + theme_bw() + ylab("") + ylab("% of Cases") + xlab("Age Group")+ theme(legend.position="bottom") +
+  ggplot() + theme_bw() + ylab("") + ylab("% of population") + xlab("Age group")+ theme(legend.position="bottom") +
     scale_x_discrete(limits=label)+
     #add the model output
     geom_col(data=outcomes_df, aes(x=label, y=percentage, fill="dodgerblue2"),alpha=0.5) +
@@ -633,14 +636,14 @@ calib_plt_us_ltbi_by_age <- function(loc) {
     geom_pointrange(data = error_df, mapping = aes(x = label, y = target, ymax = upper, ymin = lower, color = 'black')) +
     # geom_pointrange(data=outcomes_df,aes(x=label, y=percentage, ymin=x[,1], ymax=x[,2]))+
     #add plot title
-    ggtitle(paste0("IGRA+ LTBI in US Born Population 2011 in ",loc," by Age (%) [NATIONAL]"))+
+    ggtitle(paste0("IGRA+ LTBI in US born population 2011 in ",loc," by age (%)"))+
     #add data source
-    labs(caption="target data estimated using National Health and Nutrition Examination Survey (NHANES) data",
+    labs(caption="target data estimated using national estimates from the\nNational Health and Nutrition Examination Survey (NHANES) data",
          shape = 'target')
 }
 
 # ----------------------------------------------------------------------------
-#' Plot LTBI Prevalence in Non-US-Born Individuals by Age
+#' Plot LTBI Prevalence in Non-US-born Individuals by Age
 
 calib_plt_nus_ltbi_by_age <- function(loc) {
   #set the location
@@ -655,9 +658,9 @@ calib_plt_nus_ltbi_by_age <- function(loc) {
   target_df<-as.data.frame(target_df0[,2]/rowSums(target_df0[,2:3])*100)
   #update the column names for legend use
 
-  label<-c("5-14 years","15-24 years ",
-           "25-34 years","35-44 years","45-54 years",
-           "55-64 years","65-74 years","75+ years")
+  label<-c("5-14\nyears","15-24\nyears ",
+           "25-34\nyears","35-44\nyears","45-54\nyears",
+           "55-64\nyears","65-74\nyears","75+\nyears")
   rownames(target_df)<-label
   target_df<-as.data.frame(target_df); colnames(target_df)<-"percentage"
   #read in the model output data
@@ -672,7 +675,7 @@ calib_plt_nus_ltbi_by_age <- function(loc) {
   colnames(error_df)[2:4] <- c('lower', 'upper', 'target')
 
   #set up the plot options
-  ggplot() + theme_bw() + ylab("") + ylab("% of Cases") + xlab("Age Group")+ theme(legend.position="bottom") +
+  ggplot() + theme_bw() + ylab("") + ylab("% of population") + xlab("Age group")+ theme(legend.position="bottom") +
     scale_x_discrete(limits=label)+
     #add the model output
     geom_col(data=outcomes_df, aes(x=label, y=percentage, fill="dodgerblue2"),alpha=0.5) +
@@ -686,9 +689,9 @@ calib_plt_nus_ltbi_by_age <- function(loc) {
     geom_pointrange(data = error_df, mapping = aes(x = label, y = target, ymax = upper, ymin = lower, color = 'black')) +
     # geom_pointrange(data=outcomes_df,aes(x=label, y=percentage, ymin=x[,1], ymax=x[,2]))+
     #add plot title
-    ggtitle(paste0("IGRA+ LTBI in Non-US Born Population 2011 in ",loc," by Age (%) [NATIONAL]"))+
+    ggtitle(paste0("IGRA+ LTBI in non-US born population 2011 in ",loc," by age (%)"))+
     #add data source
-    labs(caption="target data estimated using National Health and Nutrition Examination Survey (NHANES) data",
+    labs(caption="target data estimated using national estimates from the\nNational Health and Nutrition Examination Survey (NHANES) data",
          shape = 'target')
 }
 
@@ -711,7 +714,7 @@ calib_plt_tb_deaths_by_year <- function(loc) {
   #scale down to thousands
   # target_df[,2:4] <-target_df[,2:4]
   #update the column names for legend use
-  colnames(target_df)<-c("year", "total TB deaths target")
+  colnames(target_df)<-c("year", "Total TB deaths target")
 
   #read in the model output data
   #find file name
@@ -722,7 +725,7 @@ calib_plt_tb_deaths_by_year <- function(loc) {
   #format the outcomes data into one dataframe and update column names for legend
   outcomes_df<-cbind(years,outcomes_df0*1e6)
   outcomes_df<-as.data.frame(outcomes_df)
-  colnames(outcomes_df)<-c("year","total TB deaths model output")
+  colnames(outcomes_df)<-c("year","Total TB deaths model output")
   #reshape the target data
   rtarget<-reshape2::melt(target_df,id="year",color=variable)
   #reshape the outcomes data
@@ -733,7 +736,7 @@ calib_plt_tb_deaths_by_year <- function(loc) {
     ylab("Deaths with TB") +
     theme(legend.position="bottom") +
     guides(colour=guide_legend(override.aes=list(linetype=c(1,2)))) +
-    expand_limits(y=0) +
+    expand_limits(y=c(0, max(rtarget$value, routcomes$value)*1.3)) +
     scale_x_continuous(breaks = years) +
     #add the target data
     geom_line(data=rtarget, aes(x=year, y=value,color=variable), linetype="dashed") +
@@ -742,9 +745,9 @@ calib_plt_tb_deaths_by_year <- function(loc) {
     #add legend
     scale_color_manual(name = "", values=c("blue","black"))+
     #add plot title
-    ggtitle(paste0("Total Deaths with TB in ",loc," ", years[1],"-", years[11]))+
+    ggtitle(paste0("Total deaths with TB in ",loc," ", years[1],"-", years[11]))+
     #add data source
-    labs(caption="target data source: CDC WONDER")
+    labs(caption="Target data source: CDC WONDER\nTarget data is displayed for unsupressed case counts (>9 deaths/year.)")
 }
 
 # ----------------------------------------------------------------------------
@@ -760,9 +763,9 @@ calib_plt_tb_deaths_by_age_over_time <- function(loc) {
   #get the years
   years<-target_df0[,1]
   #update the column names for legend use
-  label<-c("0-4 years","5-14 years","15-24 years ",
-           "25-34 years","35-44 years","45-54 years",
-           "55-64 years","65-74 years","75-84 years","85+ years")
+  label<-c("0-4\nyears","5-14\nyears","15-24\nyears ",
+           "25-34\nyears","35-44\nyears","45-54\nyears",
+           "55-64\nyears","65-74\nyears","75-84\nyears","85+\nyears")
   names(target_df)<-label
   target_df<-as.data.frame(target_df); colnames(target_df)<-"total.deaths"
   #read in the model output data
@@ -772,7 +775,7 @@ calib_plt_tb_deaths_by_age_over_time <- function(loc) {
   outcomes_df<-as.data.frame(outcomes_df)
   rownames(outcomes_df)<-label;colnames(outcomes_df)<-"total.deaths"
   #set up the plot options
-  ggplot() + theme_bw() + ylab("") +xlab("Age Group")+ theme(legend.position="bottom") +
+  ggplot() + theme_bw() + ylab("") +xlab("Age group")+ theme(legend.position="bottom") +
     scale_x_discrete(limits=label)+
     #add the model output
     geom_col(data=outcomes_df, aes(x=label, y=total.deaths, fill="dodgerblue1"), alpha=.5) +
@@ -784,7 +787,7 @@ calib_plt_tb_deaths_by_age_over_time <- function(loc) {
     #add plot title
     ggtitle(paste0("Age distribution of Deaths with TB in ", loc, " ",  years[1],"-",years[length(years)])) +
     #add data source
-    labs(caption="target data source: CDC WONDER")
+    labs(caption="Target data source: CDC WONDER")
 }
 
 # ----------------------------------------------------------------------------
@@ -832,7 +835,7 @@ calib_plt_trt_outcomes <- function(loc) {
     #add plot title
     ggtitle(paste0("Active TB Treatment Outcomes in ",loc," (%) 1993-2014"))+
     #add data source
-    labs(caption="target data source: National TB Report")
+    labs(caption="Target data source: National TB Report")
 }
 
 # ----------------------------------------------------------------------------
