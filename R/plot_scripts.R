@@ -265,6 +265,7 @@ calib_plt_tb_cases_identified_over_ten_years <- function(loc) {
     expand_limits(y=0) +
     #add the target data
     geom_line(data=rtarget, aes(x=year, y=value,color=variable), linetype="dashed", alpha=.5) +
+    geom_point(data=rtarget, aes(x=year, y=value,color=variable), alpha=.5) +
     #add the model output
     geom_line(data=routcomes, aes(x=year, y=value,color=variable)) +
     #add legend
@@ -310,6 +311,7 @@ calib_plt_tb_cases_identified_over_ten_years <- function(loc) {
       expand_limits(y=c(0,max(routcomes$value,rtarget$value)*1.3)) +
       #add the target data
       geom_line(data=rtarget, aes(x=year, y=value,color=variable), linetype="dashed", alpha=.5) +
+      geom_point(data=rtarget, aes(x=year, y=value,color=variable), alpha=.5) +
       #add the model output
       geom_line(data=routcomes, aes(x=year, y=value,color=variable)) +
       #add legend
@@ -373,6 +375,54 @@ calib_plt_tb_cases_nat_dist <- function(loc) {
     labs(caption="Target data source: Online Tuberculosis Information System (OTIS)")
 }
 
+# ----------------------------------------------------------------------------
+
+calib_plt_tb_cases_5yr_nat <- function(loc) {
+  #read in the target data
+  #find file name
+  fn<-list.files(pattern="nat_cases_5yr",system.file(paste0(loc,"/calibration_targets/"),package = "MITUS"))[2]
+  #subset into 20010-2019
+  target_df0 <-readRDS(system.file(paste0(loc,"/calibration_targets/",fn),package="MITUS"))
+
+  target_df <-rbind(c(target_df0[2,7], target_df0[3,7]),
+                    c(target_df0[2,8], target_df0[3,8]))
+  rownames(target_df) <- c("2010-2014", "2015-2019")
+  colnames(target_df) <- c("US born\nTB cases target", "Non-US born\nTB cases target")
+  rtarget<-reshape2::melt(target_df)
+  rtarget[,"axis"]<-c(1,2,1,2)
+  #set the years
+  # years<-target_df0[,1]
+  years <-2010:2019
+  #read in the model output data
+  #find file name
+  fn<-list.files(pattern="TBcases",system.file(paste0(loc,"/calibration_outputs/"),package = "MITUS"))
+  outcomes_df0 <-readRDS(system.file(paste0(loc,"/calibration_outputs/",fn), package="MITUS"))
+  #get the last ten years
+  outcomes_df_us<-outcomes_df0[[2]][((length(outcomes_df0[[2]]))-9):length(outcomes_df0[[2]])] #last 10 years
+  outcomes_df_nus<-outcomes_df0[[3]][((length(outcomes_df0[[3]]))-9):length(outcomes_df0[[3]])] #last 10 years
+
+  #sum across years
+  outcomes_df<-rbind(c(sum(outcomes_df_us[1:5]), sum(outcomes_df_nus[1:5])),
+                c(sum(outcomes_df_us[6:10]), sum(outcomes_df_nus[6:10])))*1e6
+  rownames(outcomes_df) <- c("2010-2014", "2015-2019")
+  colnames(outcomes_df) <- c("US born TB cases\n model output", "Non-US born TB\ncases model output")
+  routcomes<-reshape2::melt(outcomes_df)
+  routcomes[,"axis"]<-c(1,2,1,2)
+  #set up the plot options
+  ggplot() + theme_bw() + ylab("Cases") + xlab("Years")+ theme(legend.position="bottom") +     guides(colour=guide_legend(override.aes=list(linetype=c(rep(c(2,1),times=2))))) +
+
+    scale_x_continuous(breaks=c(1,2),labels=c("2010-2014", "2015-2019")) +  expand_limits(y=c(0,max(routcomes$value,rtarget$value)*1.3)) +
+    #add the target data
+    geom_line(data=rtarget, aes(x=axis, y=value,color=Var2), linetype="dashed",  alpha=.5) +
+    #add the model output
+    geom_line(data=routcomes, aes(x=axis, y=value,color=Var2)) +
+    #add legend
+    scale_color_manual(name = "", values=c("blue","blue","red3","red3"))+
+    #add plot title
+    ggtitle(paste0("Nativity distribution of TB cases in ", loc, " ",  years[1], "-", years[length(years)]))+
+    #add data source
+    labs(caption="Target data source: Online Tuberculosis Information System (OTIS)")
+}
 # ----------------------------------------------------------------------------
 
 calib_plt_tb_cases_age_dist <- function(loc) {
@@ -740,6 +790,7 @@ calib_plt_tb_deaths_by_year <- function(loc) {
     scale_x_continuous(breaks = years) +
     #add the target data
     geom_line(data=rtarget, aes(x=year, y=value,color=variable), linetype="dashed") +
+    geom_point(data=rtarget, aes(x=year, y=value,color=variable))+
     #add the model output
     geom_line(data=routcomes, aes(x=year, y=value,color=variable)) +
     #add legend
