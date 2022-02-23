@@ -157,7 +157,6 @@ calib_plt_tb_cases_nat_over_time <- function(loc) {
   if (loc=="US"){
   fb_TB_cases_target<-list.files(pattern=paste0(loc, "_fb_cases"),system.file(paste0(loc,"/calibration_targets/"),package = "MITUS"))
   fb_TB_cases_target<-readRDS(system.file(paste0(loc, "/calibration_targets/", fb_TB_cases_target), package="MITUS"))
-  if (loc=="US"){
     TB_cases_target<-list.files(pattern=paste0(loc, "_cases_yr"),system.file(paste0(loc,"/calibration_targets/"),package = "MITUS"))
     TB_cases_target<-readRDS(system.file(paste0(loc, "/calibration_targets/", TB_cases_target), package="MITUS"))[41:67,]
   } else {
@@ -204,7 +203,7 @@ calib_plt_tb_cases_nat_over_time <- function(loc) {
     #add data source
     labs(caption="Target data source: Online Tuberculosis Information System (OTIS)")
 }
-}
+
 
 # ----------------------------------------------------------------------------
 
@@ -215,71 +214,71 @@ calib_plt_tb_cases_identified_over_ten_years <- function(loc) {
     fb_TB_cases_target<-readRDS(system.file(paste0(loc, "/calibration_targets/", fb_TB_cases_target), package="MITUS"))
 
     TB_cases_target<-list.files(pattern=paste0(loc, "_cases_yr"),system.file(paste0(loc,"/calibration_targets/"),package = "MITUS"))
-    TB_cases_target<-readRDS(system.file(paste0(loc, "/calibration_targets/", TB_cases_target), package="MITUS"))[41:67,]
+    TB_cases_target<-readRDS(system.file(paste0(loc, "/calibration_targets/", TB_cases_target), package="MITUS"))[41:68,]/1e6
 
     target_dfz<-cbind(TB_cases_target[,1], ((1-fb_TB_cases_target[,2])*TB_cases_target[,2]*1e3),(fb_TB_cases_target[,2]*TB_cases_target[,2]*1e3))
     target_df<-cbind(target_dfz[,1], (target_dfz[,2]+target_dfz[,3]), target_dfz[,3],target_dfz[,2])
 
-  #get the years
-  years<-target_df[,1]
-  target_df<-as.data.frame(target_df)
-  #update the column names for legend use
-  colnames(target_df)<-c("year", "Total TB cases target", "Non-US born TB cases target", "US born TB cases target")
+    #get the years
+    years<-target_df[,1]
+    target_df<-as.data.frame(target_df)
+    #update the column names for legend use≤
+    colnames(target_df)<-c("year", "Total TB cases target", "Non-US born TB cases target", "US born TB cases target")
 
-  #get the last ten years
-  target_df_tot<-target_df[(nrow(target_df)-10):nrow(target_df),]
-  #get years
-  years<-target_df_tot[,1]
-  #nativity stratification
-  fn<-list.files(pattern=paste0(loc, "_fb_cases"),system.file(paste0(loc,"/calibration_targets/"),package = "MITUS"))
-  target_df0 <-readRDS(system.file(paste0(loc,"/calibration_targets/",fn),package="MITUS"))  #read in the model output data
-  #format the data into a single dataframe
-  target_df1<-cbind(target_df0[,2],1-target_df0[,2])*target_df0[,3]
-  target_df1<-target_df1/1e3
-  target_df1<-target_df1[(nrow(target_df1)-10):nrow(target_df1),]
-  target_df<-cbind(target_df_tot,target_df1[,1],target_df1[,2])
-  target_df<-as.data.frame(target_df)
-  #scale down to thousands
-  # target_df[,2:4] <-target_df[,2:4]
-  #update the column names for legend use
-  colnames(target_df)<-c("year", "Total TB cases target", "Non-US born TB cases target", "US born TB cases target")
+    #get the last ten years
+    target_df_tot<-target_df[(nrow(target_df)-10):nrow(target_df),]
+    #get years
+    years<-target_df_tot[,1]
+    #nativity stratification
+    fn<-list.files(pattern=paste0(loc, "_fb_cases"),system.file(paste0(loc,"/calibration_targets/"),package = "MITUS"))
+    target_df0 <-readRDS(system.file(paste0(loc,"/calibration_targets/",fn),package="MITUS"))  #read in the model output data
+    #format the data into a single dataframe
+    target_df1<-cbind(target_df0[,2],1-target_df0[,2])*target_df0[,3]
+    target_df1<-target_df1/1e3
+    target_df1<-target_df1[(nrow(target_df1)-10):nrow(target_df1),]
+    target_df<-cbind(target_df_tot,target_df1[,1],target_df1[,2])
+    target_df<-as.data.frame(target_df)
+    #scale down to thousands
+    # target_df[,2:4] <-target_df[,2:4]
+    #update the column names for legend use
+    colnames(target_df)<-c("year", "Total TB cases target", "Non-US born TB cases target", "US born TB cases target")
 
-  #read in the model output data
-  #find file name
-  fn<-list.files(pattern="TBcases",system.file(paste0(loc,"/calibration_outputs/"),package = "MITUS"))
-  outcomes_df0 <-readRDS(system.file(paste0(loc,"/calibration_outputs/",fn), package="MITUS"))
+    #read in the model output data
+    #find file name
+    fn<-list.files(pattern="TBcases",system.file(paste0(loc,"/calibration_outputs/"),package = "MITUS"))
+    outcomes_df0 <-readRDS(system.file(paste0(loc,"/calibration_outputs/",fn), package="MITUS"))
 
-  #format the outcomes data into one dataframe and update column names for legend
-  outcomes_df<-cbind(years,outcomes_df0[[1]][(length(outcomes_df0[[1]])-10):length(outcomes_df0[[1]])]*1e3,
-                     outcomes_df0[[2]][(length(outcomes_df0[[2]])-10):length(outcomes_df0[[2]])]*1e3,
-                     outcomes_df0[[3]][(length(outcomes_df0[[3]])-10):length(outcomes_df0[[3]])]*1e3)
-  outcomes_df<-as.data.frame(outcomes_df)
-  colnames(outcomes_df)<-c("year", "total TB cases model output", "US born TB cases model output", "Non-US born TB cases model output")
-  #reshape the target data
-  rtarget<-reshape2::melt(target_df,id="year",color=variable)
-  #reshape the outcomes data
-  routcomes<-reshape2::melt(outcomes_df,id ="year",color=variable)
-  #set up the plot options
-  ggplot() + theme_bw() + ylab("TB cases (000s) ") + theme(legend.position="bottom") + guides(colour=guide_legend(override.aes=list(linetype=c(rep(c(1,2),times=3))))) +
-    scale_x_continuous(breaks = years) +
-    expand_limits(y=0) +
-    #add the target data
-    geom_line(data=rtarget, aes(x=year, y=value,color=variable), linetype="dashed", alpha=.5) +
-    geom_point(data=rtarget, aes(x=year, y=value,color=variable), alpha=.5) +
-    #add the model output
-    geom_line(data=routcomes, aes(x=year, y=value,color=variable)) +
-    #add legend
-    scale_color_manual(name = "", values=c("green","green","black","black","blue","blue"))+
-    #add plot title
-    ggtitle(paste0("Total TB cases identified (000s) in ",loc," ", years[1],"-",years[length(years)]))+
-    #add data source
-    labs(caption="Target data source: Online Tuberculosis Information System (OTIS)")
+    #format the outcomes data into one dataframe and update column names for legend
+    outcomes_df<-cbind(years,outcomes_df0[[1]][(length(outcomes_df0[[1]])-10):length(outcomes_df0[[1]])]*1e3,
+                       outcomes_df0[[2]][(length(outcomes_df0[[2]])-10):length(outcomes_df0[[2]])]*1e3,
+                       outcomes_df0[[3]][(length(outcomes_df0[[3]])-10):length(outcomes_df0[[3]])]*1e3)
+    outcomes_df<-as.data.frame(outcomes_df)
+    colnames(outcomes_df)<-c("year", "total TB cases model output", "US born TB cases model output", "Non-US born TB cases model output")
+    #reshape the target data
+    rtarget<-reshape2::melt(target_df,id="year",color=variable)
+    #reshape the outcomes data
+    routcomes<-reshape2::melt(outcomes_df,id ="year",color=variable)
+    #set up the plot options
+    ggplot() + theme_bw() + ylab("TB cases (000s) ") + theme(legend.position="bottom") + guides(colour=guide_legend(override.aes=list(linetype=c(rep(c(1,2),times=3))))) +
+      scale_x_continuous(breaks = years) +
+      expand_limits(y=0) +
+      #add the target data
+      geom_line(data=rtarget, aes(x=year, y=value,color=variable), linetype="dashed", alpha=.5) +
+      geom_point(data=rtarget, aes(x=year, y=value,color=variable), alpha=.5) +
+      #add the model output
+      geom_line(data=routcomes, aes(x=year, y=value,color=variable)) +
+      #add legend
+      scale_color_manual(name = "", values=c("green","green","black","black","blue","blue"))+
+      #add plot title
+      ggtitle(paste0("Total TB cases identified (000s) in ",loc," ", years[1],"-",years[length(years)]))+
+      #add data source
+      labs(caption="Target data source: Online Tuberculosis Information System (OTIS)")
   } else {
 
     TB_cases_target<-list.files(pattern=paste0(loc, "_cases_yr"),system.file(paste0(loc,"/calibration_targets/"),package = "MITUS"))
     TB_cases_target<-readRDS(system.file(paste0(loc, "/calibration_targets/", TB_cases_target), package="MITUS"))
     target_df <- TB_cases_target
-    target_df[,2] <- target_df[,2]*1e3
+    target_df[,2] <- target_df[,2]
 
     target_df<-as.data.frame(target_df)
     #update the column names for legend use
@@ -289,7 +288,7 @@ calib_plt_tb_cases_identified_over_ten_years <- function(loc) {
     target_df<-target_df[(nrow(target_df)-9):nrow(target_df),]
     #get years
     #years<-target_df_tot[,1]
-    years<-2010:2019
+    years<-2011:2020
 
     #read in the model output data
     #find file name
@@ -319,7 +318,8 @@ calib_plt_tb_cases_identified_over_ten_years <- function(loc) {
       #add plot title
       ggtitle(paste0("Total TB cases identified in ",loc," ", years[1],"-",years[length(years)]))+
       #add data source
-      labs(caption="Target data source: Online Tuberculosis Information System (OTIS)")
+      labs(caption="Target data source: Online Tuberculosis Information System (OTIS)\n
+                    Assumed reduction in TB cases in 2020 based on national data.")
 
   }
 }
@@ -327,6 +327,34 @@ calib_plt_tb_cases_identified_over_ten_years <- function(loc) {
 # ----------------------------------------------------------------------------
 
 calib_plt_tb_cases_nat_dist <- function(loc) {
+  if (loc =="US"){
+    fb_TB_cases_target<-list.files(pattern=paste0(loc, "_fb_cases"),system.file(paste0(loc,"/calibration_targets/"),package = "MITUS"))
+    fb_TB_cases_target<-readRDS(system.file(paste0(loc, "/calibration_targets/", fb_TB_cases_target), package="MITUS"))
+
+    TB_cases_target<-list.files(pattern=paste0(loc, "_cases_yr"),system.file(paste0(loc,"/calibration_targets/"),package = "MITUS"))
+    TB_cases_target<-readRDS(system.file(paste0(loc, "/calibration_targets/", TB_cases_target), package="MITUS"))[41:68,]/1e6
+
+    target_dfz<-cbind(TB_cases_target[,1], ((1-fb_TB_cases_target[,2])*TB_cases_target[,2]*1e3),(fb_TB_cases_target[,2]*TB_cases_target[,2]*1e3))
+    target_df<-cbind(target_dfz[,1], (target_dfz[,2]+target_dfz[,3]), target_dfz[,3],target_dfz[,2])
+
+    #get the years
+    years<-target_df[,1]
+    target_df<-as.data.frame(target_df)
+    #update the column names for legend use≤
+    colnames(target_df)<-c("year", "Total TB cases target", "Non-US born TB cases target", "US born TB cases target")
+
+    #get the last ten years
+    target_df_tot_us<-c(sum(target_df[(nrow(target_df)-9):(nrow(target_df)-5),4]), sum(target_df[(nrow(target_df)-4):(nrow(target_df)),4]))/
+      c(sum(target_df[(nrow(target_df)-9):(nrow(target_df)-5),2]), sum(target_df[(nrow(target_df)-4):(nrow(target_df)),2]))*100
+    target_df_tot_nus<-c(sum(target_df[(nrow(target_df)-9):(nrow(target_df)-5),3]), sum(target_df[(nrow(target_df)-4):(nrow(target_df)),3]))/
+      c(sum(target_df[(nrow(target_df)-9):(nrow(target_df)-5),2]), sum(target_df[(nrow(target_df)-4):(nrow(target_df)),2]))*100
+
+    target_df <- cbind(target_df_tot_us[1],target_df_tot_nus[1],target_df_tot_us[2],target_df_tot_nus[2])
+
+    #scale down to thousands
+    # target_df[,2:4] <-target_df[,2:4]
+    #update the column names for legend use
+  } else {
   #read in the target data
   #find file name
   fn<-list.files(pattern="ag_nat_cases_5yr",system.file(paste0(loc,"/calibration_targets/"),package = "MITUS"))
@@ -334,15 +362,16 @@ calib_plt_tb_cases_nat_dist <- function(loc) {
   target_df0 <-readRDS(system.file(paste0(loc,"/calibration_targets/",fn),package="MITUS"))
 
   target_df0<-rbind(target_df0[((nrow(target_df0)/2)-1):(nrow(target_df0)/2),], #last 10 years
-                target_df0[(nrow(target_df0)-1):nrow(target_df0),] )#last 10 years
+                    target_df0[(nrow(target_df0)-1):nrow(target_df0),] )#last 10 years
 
   target_df <-cbind(rowSums(target_df0[1,5:14])/(rowSums(target_df0[1,5:14])+rowSums(target_df0[3,5:14])), rowSums(target_df0[3,5:14])/(rowSums(target_df0[1,5:14])+rowSums(target_df0[3,5:14])),
                     rowSums(target_df0[2,5:14])/(rowSums(target_df0[2,5:14])+rowSums(target_df0[4,5:14])), rowSums(target_df0[4,5:14])/(rowSums(target_df0[2,5:14])+rowSums(target_df0[4,5:14])))*1e2
+  }
   #set the years
   # years<-target_df0[,1]
-  years <-2010:2019
+  years <-2011:2020
   #update the column names for legend use
-  label<-c("2010-2014 USB", "2010-2014 NUSB", "2015-2019 USB", "2015-2019 NUSB")
+  label<-c("2011-2015 USB", "2011-2015 NUSB", "2016-2020 USB", "2016-2020 NUSB")
   target_df<-data.frame("label" = label,
                         "cases" = t(target_df))
   colnames(target_df) <-c("label", "cases")
@@ -351,14 +380,15 @@ calib_plt_tb_cases_nat_dist <- function(loc) {
   fn<-list.files(pattern="TBcases",system.file(paste0(loc,"/calibration_outputs/"),package = "MITUS"))
   outcomes_df0 <-readRDS(system.file(paste0(loc,"/calibration_outputs/",fn), package="MITUS"))
   #get the last ten years
-  outcomes_df_us<-outcomes_df0[[2]][(length(outcomes_df0[[2]]))-9:length(outcomes_df0[[2]])] #last 10 years
-  outcomes_df_nus<-outcomes_df0[[3]][(length(outcomes_df0[[3]]))-9:length(outcomes_df0[[3]])] #last 10 years
+  outcomes_df_tot<-outcomes_df0[[1]][((length(outcomes_df0[[1]]))-9):length(outcomes_df0[[1]])] #last 10 years
+  outcomes_df_us<-outcomes_df0[[2]][((length(outcomes_df0[[2]]))-9):length(outcomes_df0[[2]])] #last 10 years
+  outcomes_df_nus<-outcomes_df0[[3]][((length(outcomes_df0[[3]]))-9):length(outcomes_df0[[3]])] #last 10 years
 
   #sum across years
-  outcomes_df<-c(sum(outcomes_df_us[1:5])/(sum(outcomes_df_nus[1:5])+sum(outcomes_df_us[1:5])), sum(outcomes_df_nus[1:5])/(sum(outcomes_df_nus[1:5])+sum(outcomes_df_us[1:5])),
-                 sum(outcomes_df_us[6:10])/(sum(outcomes_df_nus[6:10])+sum(outcomes_df_us[6:10])), sum(outcomes_df_nus[6:10])/(sum(outcomes_df_nus[6:10])+sum(outcomes_df_us[6:10])))*1e2
+  outcomes_df<-c(sum(outcomes_df_us[1:5])/sum(outcomes_df_tot[1:5]), sum(outcomes_df_nus[1:5])/sum(outcomes_df_tot[1:5]),
+                 sum(outcomes_df_us[6:10])/sum(outcomes_df_tot[6:10]), sum(outcomes_df_nus[6:10])/sum(outcomes_df_tot[6:10])+sum(outcomes_df_us[6:10]))*1e2
   outcomes_df<-data.frame("label" = label,
-                             "cases" = outcomes_df)
+                          "cases" = outcomes_df)
   #set up the plot options
   ggplot() + theme_bw() + ylab("% of cases") +xlab("Nativity and years")+ theme(legend.position="bottom") +
     scale_x_discrete(limits=label)+
@@ -377,6 +407,7 @@ calib_plt_tb_cases_nat_dist <- function(loc) {
 
 # ----------------------------------------------------------------------------
 
+####check this one!!!!! ###
 calib_plt_tb_cases_5yr_nat <- function(loc) {
   #read in the target data
   #find file name
@@ -384,15 +415,15 @@ calib_plt_tb_cases_5yr_nat <- function(loc) {
   #subset into 20010-2019
   target_df0 <-readRDS(system.file(paste0(loc,"/calibration_targets/",fn),package="MITUS"))
 
-  target_df <-rbind(c(target_df0[2,7], target_df0[3,7]),
-                    c(target_df0[2,8], target_df0[3,8]))
-  rownames(target_df) <- c("2010-2014", "2015-2019")
+  target_df <-rbind(c(target_df0[1,7], target_df0[2,7]),
+                    c(target_df0[1,8], target_df0[2,8]))
+  rownames(target_df) <- c("2011-2015", "2016-2020")
   colnames(target_df) <- c("US born\nTB cases target", "Non-US born\nTB cases target")
   rtarget<-reshape2::melt(target_df)
   rtarget[,"axis"]<-c(1,2,1,2)
   #set the years
   # years<-target_df0[,1]
-  years <-2010:2019
+  years <-2011:2020
   #read in the model output data
   #find file name
   fn<-list.files(pattern="TBcases",system.file(paste0(loc,"/calibration_outputs/"),package = "MITUS"))
@@ -403,15 +434,15 @@ calib_plt_tb_cases_5yr_nat <- function(loc) {
 
   #sum across years
   outcomes_df<-rbind(c(sum(outcomes_df_us[1:5]), sum(outcomes_df_nus[1:5])),
-                c(sum(outcomes_df_us[6:10]), sum(outcomes_df_nus[6:10])))*1e6
-  rownames(outcomes_df) <- c("2010-2014", "2015-2019")
+                     c(sum(outcomes_df_us[6:10]), sum(outcomes_df_nus[6:10])))*1e6
+  rownames(outcomes_df) <- c("2011-2015", "2016-2020")
   colnames(outcomes_df) <- c("US born TB cases\n model output", "Non-US born TB\ncases model output")
   routcomes<-reshape2::melt(outcomes_df)
   routcomes[,"axis"]<-c(1,2,1,2)
   #set up the plot options
   ggplot() + theme_bw() + ylab("Cases") + xlab("Years")+ theme(legend.position="bottom") +     guides(colour=guide_legend(override.aes=list(linetype=c(rep(c(2,1),times=2))))) +
 
-    scale_x_continuous(breaks=c(1,2),labels=c("2010-2014", "2015-2019")) +  expand_limits(y=c(0,max(routcomes$value,rtarget$value)*1.3)) +
+    scale_x_continuous(breaks=c(1,2),labels=c("2011-2015", "2016-2020")) +  expand_limits(y=c(0,max(routcomes$value,rtarget$value)*1.3)) +
     #add the target data
     geom_line(data=rtarget, aes(x=axis, y=value,color=Var2), linetype="dashed",  alpha=.5) +
     #add the model output
@@ -434,16 +465,19 @@ calib_plt_tb_cases_age_dist <- function(loc) {
   if (loc =="US"){
     #get the last ten years
     target_df0<-target_df0[(nrow(target_df0)-9):nrow(target_df0),] #last 10 years
+    #calculate the numbers of cases from percentages and sample size
+    target_df1<-cbind(target_df0[,1],target_df0[,2:11]*target_df0[,12])
+    #sum across years
+    target_df<-(colSums(target_df1[,2:11])/sum(target_df1[,2:11]))*100
   } else{
-    target_df0<-target_df0[(nrow(target_df0)-1):nrow(target_df0),] #last 10 years
+    target_df1<-as.matrix(target_df0[(nrow(target_df0)-1):nrow(target_df0),4:13],2,10) #last 10 years
+    for (i in 1:length(target_df1)){ if(is.na(target_df1[i])==TRUE){ target_df1[i]<-0}}
+    target_df <- (colSums(target_df1)/sum(target_df1))*100
   }
-  #calculate the numbers of cases from percentages and sample size
-  target_df1<-cbind(target_df0[,1],target_df0[,2:11]*target_df0[,12])
-  #sum across years
-  target_df<-(colSums(target_df1[,2:11])/sum(target_df1[,2:11]))*100
+
   #set the years
   # years<-target_df0[,1]
-  years <-2010:2019
+  years <-2011:2020
   #update the column names for legend use
   label<-c("0-4\nyears","5-14\nyears","15-24\nyears ",
            "25-34\nyears","35-44\nyears","45-54\nyears",

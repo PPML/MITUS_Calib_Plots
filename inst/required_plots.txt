@@ -1,4 +1,4 @@
-Total_Population
+Pop_Nat_Time
 TB_Cases_Recent_Time
 TB_Cases_Nativity
 TB_Cases_Age
