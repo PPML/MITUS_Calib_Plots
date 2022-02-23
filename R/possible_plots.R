@@ -15,8 +15,8 @@
 #' @inheritParams calib_plots
 all_possible_plots_df<-function(loc){
 
-  short_names_vec<-c(#"Total_Population",
-                     "Pop_Nat_Time",
+  short_names_vec<-c("Total_Population",
+                     #"Pop_Nat_Time",
                      # "Deaths_Time",
                      "TB_Cases_Time",
                      "TB_Cases_Recent_Time",
@@ -31,8 +31,8 @@ all_possible_plots_df<-function(loc){
                      # "TB_Deaths_Age_Time",
                      # "Treatment_Outcomes")
   plot_cats<-c(rep("Demography",1),rep("Epidemiology",8))
-  long_names_vec<-c(#"Population: Total, US, and Non-US Born",
-                   "Population by Age for Non-US Born and US Born",
+  long_names_vec<-c("Population: Total, US, and Non-US Born",
+                   #"Population by Age for Non-US Born and US Born",
                    # "Mortality: Total, US, and Non-US Born",
                    "Total TB Cases Identified",
                    "Total TB Cases Identified in Recent Years",

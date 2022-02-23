@@ -7,19 +7,15 @@ target_data_list<-function(loc){
   pop_age_target<-readRDS(system.file(paste0(loc1, "/calibration_targets/", pop_age_target), package="MITUS"))
 
   ##  "Total TB Cases Identified",
-
   if (loc=="US"){
-  TB_cases_target<-list.files(pattern=paste0(loc, "_cases_yr"),system.file(paste0(loc,"/calibration_targets/"),package = "MITUS"))
-  TB_cases_target<-readRDS(system.file(paste0(loc, "/calibration_targets/", TB_cases_target), package="MITUS"))[41:67,]
   fb_TB_cases_target<-list.files(pattern=paste0(loc, "_fb_cases"),system.file(paste0(loc,"/calibration_targets/"),package = "MITUS"))
   fb_TB_cases_target<-readRDS(system.file(paste0(loc, "/calibration_targets/", fb_TB_cases_target), package="MITUS"))
-  TB_cases_target<-cbind(TB_cases_target[,1], ((1-fb_TB_cases_target[,2])*TB_cases_target[,2]*1e6),(fb_TB_cases_target[,2]*TB_cases_target[,2]*1e6))
+  TB_cases_target<-cbind(fb_TB_cases_target[,1], ((1-fb_TB_cases_target[,2])*fb_TB_cases_target[,3]),(fb_TB_cases_target[,2]*fb_TB_cases_target[,3]))
   colnames(TB_cases_target)<-c("Year", "USB Cases", "NUSB Cases")
   } else {
     TB_cases_target<-list.files(pattern=paste0(loc, "_cases_yr"),system.file(paste0(loc,"/calibration_targets/"),package = "MITUS"))
     TB_cases_target<-readRDS(system.file(paste0(loc, "/calibration_targets/", TB_cases_target), package="MITUS"))
   }
-
 
   ##  "Total TB Cases Identified in Recent Years",
   TB_cases_10yr_target<-TB_cases_target[(nrow(TB_cases_target)-9):nrow(TB_cases_target),]

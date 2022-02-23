@@ -39,9 +39,9 @@ data_check<-function(loc, possible_plots){
   if(
      length(list.files(pattern="tot_pop19_ag_fb",system.file(paste0(loc,"/calibration_targets/"),package = "MITUS")))==1 &
        length(list.files(pattern="pop_ag_nat",system.file(paste0(loc,"/calibration_outputs/"),package = "MITUS")))==1){
-    available_plots["Pop_Nat_Time"]<-TRUE
+    available_plots["Total_Population"]<-TRUE
   } else {
-    available_plots["Pop_Nat_Time"]<-FALSE
+    available_plots["Total_Population"]<-FALSE
   }
   #TB Cases by Nativity
   if(
